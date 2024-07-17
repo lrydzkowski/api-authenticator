@@ -1,0 +1,39 @@
+{
+  "name": "@lrydzkowski/api-authenticator",
+  "version": "1.0.0",
+  "description": "A console app generating an access token for APIs protected by OAuth 2.0 protocol",
+  "main": "dist/index.js",
+  "bin": {
+    "api-authenticator": "./dist/index.js"
+  },
+  "scripts": {
+    "generate-token": "tsx index.ts generate-token",
+    "build": "tsc",
+    "lint": "npx eslint .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lrydzkowski/api-authenticator"
+  },
+  "author": "lrydzkowski",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^12.1.0",
+    "fluentvalidation-ts": "^3.2.0",
+    "oauth4webapi": "^2.11.1",
+    "puppeteer": "^22.13.0"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@commander-js/extra-typings": "^12.1.0",
+    "@eslint/js": "^9.7.0",
+    "@types/eslint__js": "^8.42.3",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.3",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^7.16.0"
+  }
+}
+

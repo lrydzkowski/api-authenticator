@@ -1,0 +1,12 @@
+{
+  "rest-client.environmentVariables": {
+    "App - local": {
+      "bearerToken": "",
+      "baseUrl": "https://localhost:7040"
+    },
+    "App - dev": {
+      "bearerToken": "",
+      "baseUrl": "https://localhost:7041"
+    }
+  }
+}

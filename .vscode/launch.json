@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "generate-token",
+      "type": "node",
+      "request": "launch",
+      "program": "index.ts",
+      "args": [
+        "generate-token",
+        "--config-file-path",
+        "./docs/sample-config-files/ad-client-credentials-test-config-with-secrets.json",
+        "--env",
+        "App - local",
+        "--add-prefix-to-output",
+        "--output-file-path",
+        "./docs/sample-output-files/settings-with-secrets.json",
+        "--output-file-key",
+        "'rest-client.environmentVariables'.'{env}'.'bearerToken'",
+        "--output-file-win-new-line-char"
+      ],
+      "runtimeExecutable": "tsx",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**", "${workspaceFolder}/node_modules/**"]
+    }
+  ]
+}

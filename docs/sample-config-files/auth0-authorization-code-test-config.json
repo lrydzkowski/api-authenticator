@@ -1,0 +1,11 @@
+{
+  "App - local": {
+    "clientId": "client_id",
+    "redirectUri": "http://localhost:4200",
+    "scope": "openid offline_access profile",
+    "authorizationEndpoint": "https://tenant.eu.auth0.com/authorize",
+    "tokenEndpoint": "https://tenant.eu.auth0.com/oauth/token",
+    "audience": "https://tenant-cloud.com/api/test",
+    "flow": "authorization_code"
+  }
+}
