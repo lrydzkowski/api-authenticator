@@ -1,6 +1,6 @@
 {
   "name": "@lrydzkowski/api-authenticator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A console app generating an access token for APIs protected by OAuth 2.0 protocol",
   "main": "dist/index.js",
   "bin": {
@@ -35,3 +35,4 @@
     "typescript-eslint": "^7.16.0"
   }
 }
+
