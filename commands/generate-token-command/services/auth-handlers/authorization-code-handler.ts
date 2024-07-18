@@ -69,7 +69,7 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     const browser = await puppeteer.launch({
       headless: false,
       defaultViewport: { width: 800, height: 800 },
-      args: ['--window-size=800,800', authorizationUrl.toString()],
+      args: ['--window-size=800,800'],
       protocolTimeout: timeout,
     });
     try {
@@ -79,6 +79,7 @@ export class AuthorizationCodeHandler implements IAuthHandler {
       }
 
       const page = pages[0];
+      await page.goto(authorizationUrl.toString(), { waitUntil: 'networkidle0' });
       await page.setRequestInterception(true);
       const resultPromise = new Promise<AuthResponse>((resolve) => {
         page.on('request', (request) => {
