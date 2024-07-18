@@ -23,9 +23,7 @@ export class ClientCredentialsHandler implements IAuthHandler {
     authServer: oauth.AuthorizationServer,
     client: oauth.Client,
   ): Promise<string> {
-    const parameters: Record<string, string> = {};
-    this.addParamIfExists(parameters, config, 'resource');
-
+    const parameters: Record<string, string> = this.buildParameters(config);
     const response: Response = await oauth.clientCredentialsGrantRequest(authServer, client, parameters);
     const responseBody = await response.json();
     const accessToken = responseBody?.access_token ?? null;
@@ -36,6 +34,13 @@ export class ClientCredentialsHandler implements IAuthHandler {
     }
 
     return accessToken;
+  }
+
+  private buildParameters(config: AuthConfig) {
+    const parameters: Record<string, string> = {};
+    this.addParamIfExists(parameters, config, 'resource');
+
+    return parameters;
   }
 
   private addParamIfExists(parameters: Record<string, string>, config: AuthConfig, paramName: keyof AuthConfig): void {

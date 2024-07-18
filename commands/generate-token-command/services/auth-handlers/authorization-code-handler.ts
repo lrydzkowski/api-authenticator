@@ -20,12 +20,14 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     const authUrl = await this.buildAuthUrlAsync(config, codeVerifier, state);
     const authResponse = await this.getAuthResponseAsync(authUrl);
     const authResponseValidationResult = this.validateAuthResponse(authServer, client, authResponse, state);
+    const origin = config.origin ?? null;
     const token = await this.getTokenAsync(
       authServer,
       client,
       authResponseValidationResult,
       authResponse,
       codeVerifier,
+      origin,
     );
 
     return token;
@@ -133,13 +135,22 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     authResponseValidationResult: URLSearchParams,
     authResponse: AuthResponse,
     codeVerifier: string,
+    origin: string | null,
   ): Promise<string> {
+    const options: oauth.TokenEndpointRequestOptions = {};
+    if (origin !== null) {
+      options.headers = {
+        origin,
+      };
+    }
+
     const response: Response = await oauth.authorizationCodeGrantRequest(
       authServer,
       client,
       authResponseValidationResult,
       authResponse.redirectUri,
       codeVerifier,
+      options,
     );
     const responseBody = await response.json();
     const accessToken = responseBody?.access_token ?? null;

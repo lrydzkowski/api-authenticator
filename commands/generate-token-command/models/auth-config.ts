@@ -7,5 +7,6 @@ export interface AuthConfig {
   tokenEndpoint: string;
   audience?: string;
   resource?: string;
+  origin?: string;
   flow: 'authorization_code' | 'client_credentials';
 }
