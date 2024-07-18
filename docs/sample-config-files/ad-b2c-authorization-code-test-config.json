@@ -1,10 +1,11 @@
 {
   "App - local": {
-    "clientId": "client_id",
-    "redirectUri": "https://test.com/callback",
-    "scope": "openid offline_access",
-    "authorizationEndpoint": "https://b2ctenant.b2clogin.com/b2ctenant.onmicrosoft.com/B2C_1_SIGN_UP_SIGN_IN/oauth2/v2.0/authorize",
-    "tokenEndpoint": "https://b2ctenant.b2clogin.com/b2ctenant.onmicrosoft.com/B2C_1_SIGN_UP_SIGN_IN/oauth2/v2.0/token",
+    "clientId": "{client_id}",
+    "redirectUri": "{redirect_uri}",
+    "scope": "openid offline_access profile",
+    "authorizationEndpoint": "https://{tenant_name}.eu.auth0.com/authorize",
+    "tokenEndpoint": "https://{tenant_name}.eu.auth0.com/oauth/token",
+    "audience": "{audience}",
     "flow": "authorization_code"
   }
 }
