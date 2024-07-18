@@ -53,7 +53,7 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     configParamName: keyof AuthConfig,
     searchParamName: string | null = null,
   ): void {
-    if (config[configParamName]) {
+    if (!config[configParamName]) {
       return;
     }
 
