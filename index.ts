@@ -14,7 +14,7 @@ const program = new Command();
 program
   .name('api-authenticator')
   .description('A console app generating an access token for APIs protected by OAuth 2.0 protocol.')
-  .version('1.0.4');
+  .version('1.0.5');
 
 program
   .command('generate-token')
