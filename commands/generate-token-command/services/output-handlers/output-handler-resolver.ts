@@ -16,7 +16,7 @@ export class OutputHandlerResolver implements IOutputHandlerResolver {
   ) {}
 
   public resolve(options: GenerateTokenOptions): IOutputHandler {
-    if (options.outputFilePath && options.outputFileKey) {
+    if (options.outputFilePath && options.outputFileAccessTokenKey) {
       return new FileOutputHandler(this.filesHandler);
     }
 

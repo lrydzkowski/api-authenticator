@@ -70,7 +70,7 @@ httpgenerator $SpecUrl `
 Pop-Location
 ```
 
-There are also PowerShell scripts for generating access tokens that are automatically written in settings.json files.
+There are also PowerShell scripts for generating access tokens and refresh tokens that are automatically written in settings.json files.
 
 `R.Systems.Template/auth-ad.ps1`
 
@@ -83,23 +83,26 @@ param(
 api-authenticator generate-token `
   --config-file-path "./ad-auth-config.json" `
   --env $Env `
-  --add-prefix-to-output `
+  --add-prefix-to-access-token `
   --output-file-path "./.vscode/settings.json" `
-  --output-file-key "'rest-client.environmentVariables'.'{env}'.'bearerToken'" `
+  --output-file-access-token-key "'rest-client.environmentVariables'.'{env}'.'bearerToken'" `
+  --output-file-refresh-token-key "'rest-client.environmentVariables'.'{env}'.'refreshToken'" `
   --output-file-win-new-line-char
 ```
 
-It writes an access token to `R.Systems.Template/.vscode/settings.json`:
+It writes tokens to `R.Systems.Template/.vscode/settings.json`:
 
 ```json
 {
   "rest-client.environmentVariables": {
     "R.Systems.Template - local": {
-      "bearerToken": "Bearer {generated_token}",
+      "bearerToken": "Bearer {generated_access_token}",
+      "refreshToken": "{generated_refresh_token}",
       "baseUrl": "https://localhost:7040"
     },
     "R.Systems.Template - prod": {
-      "bearerToken": "Bearer {generated_token}",
+      "bearerToken": "Bearer {generated_access_token}",
+      "refreshToken": "{generated_refresh_token}",
       "baseUrl": "https://test.com/api/template"
     }
   }
@@ -192,20 +195,22 @@ Run the following command in PowerShell Core:
 api-authenticator generate-token `
   --config-file-path "{config_file_path}" `
   --env "App - local" `
-  --add-prefix-to-output
+  --add-prefix-to-access-token
 ```
 
-It's also possible to write a generated access token to an output JSON file. Let's created an example output file:
+It's also possible to write a generated access token to an output JSON file. Let's create an example output file:
 
 ```json
 {
   "rest-client.environmentVariables": {
     "App - local": {
       "bearerToken": "",
+      "refreshToken": "",
       "baseUrl": "https://localhost:7040"
     },
     "App - dev": {
       "bearerToken": "",
+      "refreshToken": "",
       "baseUrl": "https://localhost:7041"
     }
   }
@@ -218,20 +223,20 @@ and run the following command:
 api-authenticator generate-token `
   --config-file-path "{config_file_path}" `
   --env "App - local" `
-  --add-prefix-to-output `
+  --add-prefix-to-access-token `
   --output-file-path "{output_file_path}" `
-  --output-file-key "'rest-client.environmentVariables'.'{env}'.'bearerToken'" `
+  --output-file-access-token-key "'rest-client.environmentVariables'.'{env}'.'bearerToken'" `
+  --output-file-refresh-token-key "'rest-client.environmentVariables'.'{env}'.'refreshToken'" `
   --output-file-win-new-line-char
 ```
 
 ## Technical Details
 
 1. It's written in TypeScript.
-2. The process of getting a new access token is based on:
+2. The process of getting tokens is based on:
    1. oauth4webapi library - <https://github.com/panva/oauth4webapi>.
    2. Puppeteer library - <https://pptr.dev/>
 
 ## Known Limitations
 
 1. OAuth 2.0 protocol support is based on my specific needs and it's not a comprehensive implementation regarding different possible configurations of this protocol.
-2. It doesn't use a refresh token to make the process of getting a new access token even faster.

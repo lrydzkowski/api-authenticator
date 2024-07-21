@@ -1,9 +1,10 @@
 import { AuthConfig } from '../../models/auth-config.js';
+import { Tokens } from '../../models/tokens.js';
 import { IAuthHandler } from './auth-handler.js';
 import * as oauth from 'oauth4webapi';
 
 export class ClientCredentialsHandler implements IAuthHandler {
-  async getAccessTokenAsync(config: AuthConfig): Promise<string> {
+  async getTokensAsync(config: AuthConfig): Promise<Tokens> {
     const authServer: oauth.AuthorizationServer = {
       token_endpoint: config.tokenEndpoint,
       issuer: 'unknown',
@@ -13,16 +14,16 @@ export class ClientCredentialsHandler implements IAuthHandler {
       client_secret: config.clientSecret!,
     };
 
-    const accessToken = await this.getTokenAsync(config, authServer, client);
+    const tokens = await this.sendClientCredentialsGrantRequestAsync(config, authServer, client);
 
-    return accessToken;
+    return tokens;
   }
 
-  private async getTokenAsync(
+  private async sendClientCredentialsGrantRequestAsync(
     config: AuthConfig,
     authServer: oauth.AuthorizationServer,
     client: oauth.Client,
-  ): Promise<string> {
+  ): Promise<Tokens> {
     const parameters: Record<string, string> = this.buildParameters(config);
     const response: Response = await oauth.clientCredentialsGrantRequest(authServer, client, parameters);
     const responseBody = await response.json();
@@ -33,7 +34,12 @@ export class ClientCredentialsHandler implements IAuthHandler {
       );
     }
 
-    return accessToken;
+    const refreshToken = responseBody?.refresh_token ?? null;
+
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 
   private buildParameters(config: AuthConfig) {

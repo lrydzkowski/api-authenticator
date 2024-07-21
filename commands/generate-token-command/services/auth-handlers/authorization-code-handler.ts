@@ -2,11 +2,10 @@ import puppeteer from 'puppeteer';
 import { AuthConfig } from '../../models/auth-config.js';
 import { IAuthHandler } from './auth-handler.js';
 import * as oauth from 'oauth4webapi';
+import { Tokens } from '../../models/tokens.js';
 
 export class AuthorizationCodeHandler implements IAuthHandler {
-  public async getAccessTokenAsync(config: AuthConfig): Promise<string> {
-    const codeVerifier = oauth.generateRandomCodeVerifier();
-    const state = oauth.generateRandomState();
+  public async getTokensAsync(config: AuthConfig, refreshToken: string | null): Promise<Tokens> {
     const authServer: oauth.AuthorizationServer = {
       authorization_endpoint: config.authorizationEndpoint,
       token_endpoint: config.tokenEndpoint,
@@ -17,11 +16,19 @@ export class AuthorizationCodeHandler implements IAuthHandler {
       token_endpoint_auth_method: 'none',
     };
 
+    const refreshedTokens: Tokens | null = await this.refreshTokensAsync(authServer, client, refreshToken);
+    if (refreshedTokens) {
+      return refreshedTokens;
+    }
+
+    const codeVerifier = oauth.generateRandomCodeVerifier();
+    const state = oauth.generateRandomState();
+
     const authUrl = await this.buildAuthUrlAsync(config, codeVerifier, state);
     const authResponse = await this.getAuthResponseAsync(authUrl);
     const authResponseValidationResult = this.validateAuthResponse(authServer, client, authResponse, state);
     const origin = config.origin ?? null;
-    const token = await this.getTokenAsync(
+    const tokens = await this.sendAuthorizationCodeGrantRequestAsync(
       authServer,
       client,
       authResponseValidationResult,
@@ -30,7 +37,31 @@ export class AuthorizationCodeHandler implements IAuthHandler {
       origin,
     );
 
-    return token;
+    return tokens;
+  }
+
+  private async refreshTokensAsync(
+    authServer: oauth.AuthorizationServer,
+    client: oauth.Client,
+    refreshToken: string | null,
+  ): Promise<Tokens | null> {
+    if (!refreshToken) {
+      return null;
+    }
+
+    const response: Response = await oauth.refreshTokenGrantRequest(authServer, client, refreshToken);
+    const responseBody = await response.json();
+    const accessToken = responseBody?.access_token ?? null;
+    if (accessToken === null) {
+      return null;
+    }
+
+    const newRefreshToken = responseBody?.refresh_token ?? null;
+
+    return {
+      accessToken,
+      refreshToken: newRefreshToken,
+    };
   }
 
   private async buildAuthUrlAsync(config: AuthConfig, codeVerifier: string, state: string): Promise<URL> {
@@ -129,14 +160,14 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     return authResponseValidationResult;
   }
 
-  private async getTokenAsync(
+  private async sendAuthorizationCodeGrantRequestAsync(
     authServer: oauth.AuthorizationServer,
     client: oauth.Client,
     authResponseValidationResult: URLSearchParams,
     authResponse: AuthResponse,
     codeVerifier: string,
     origin: string | null,
-  ): Promise<string> {
+  ): Promise<Tokens> {
     const options: oauth.TokenEndpointRequestOptions = {};
     if (origin !== null) {
       options.headers = {
@@ -160,7 +191,12 @@ export class AuthorizationCodeHandler implements IAuthHandler {
       );
     }
 
-    return accessToken;
+    const refreshToken = responseBody?.refresh_token ?? null;
+
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 }
 

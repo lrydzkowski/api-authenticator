@@ -1,8 +1,10 @@
 export interface GenerateTokenOptions {
   configFilePath: string;
   env: string;
-  addPrefixToOutput?: boolean;
+  addPrefixToAccessToken?: boolean;
   outputFilePath?: string;
-  outputFileKey?: string;
+  outputFileAccessTokenKey?: string;
+  outputFileRefreshTokenKey?: string;
   outputFileWinNewLineChar?: boolean;
+  notUseRefreshToken?: boolean;
 }

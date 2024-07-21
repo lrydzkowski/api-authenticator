@@ -1,5 +1,6 @@
 import { GenerateTokenOptions } from '../../models/generate-token-options.js';
+import { Tokens } from '../../models/tokens.js';
 
 export interface IOutputHandler {
-  handle(options: GenerateTokenOptions, accessToken: string): void;
+  handleOutput(options: GenerateTokenOptions, tokens: Tokens): void;
 }

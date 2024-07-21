@@ -1,5 +1,6 @@
 import { AuthConfig } from '../../models/auth-config.js';
+import { Tokens } from '../../models/tokens.js';
 
 export interface IAuthHandler {
-  getAccessTokenAsync(config: AuthConfig): Promise<string>;
+  getTokensAsync(config: AuthConfig, refreshToken: string | null): Promise<Tokens>;
 }

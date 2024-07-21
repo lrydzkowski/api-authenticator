@@ -7,11 +7,14 @@ import { GenerateTokenOptions } from './models/generate-token-options.js';
 import { GenerateTokenOptionsValidator } from './validators/generate-token-options-validator.js';
 import { IOutputHandlerResolver } from './services/output-handlers/output-handler-resolver.js';
 import { IFilesHandler } from '../../core/services/files-handler.js';
+import { Tokens } from './models/tokens.js';
+import { IFileOutputHandler } from './services/output-handlers/file-output-handler.js';
 
 export class GenerateTokenCommand {
   constructor(
     private filesHandler: IFilesHandler,
     private authConfigParser: IAuthConfigParser,
+    private fileOutputHandler: IFileOutputHandler,
     private authHandlerResolver: IAuthHandlerResolver,
     private outputHandlerResolver: IOutputHandlerResolver,
   ) {}
@@ -22,13 +25,14 @@ export class GenerateTokenCommand {
     const authConfig: AuthConfig = this.authConfigParser.parse(options.configFilePath, options.env);
     this.validateAuthConfig(authConfig);
 
-    const authHandler = this.authHandlerResolver.resolve(authConfig);
-    let accessToken = await authHandler.getAccessTokenAsync(authConfig);
+    const refreshToken = this.fileOutputHandler.getRefreshToken(options);
 
-    accessToken = this.parseAccessToken(options, accessToken);
+    const authHandler = this.authHandlerResolver.resolve(authConfig);
+    const tokens = await authHandler.getTokensAsync(authConfig, refreshToken);
+    this.parseAccessToken(options, tokens);
 
     const outputHandler = this.outputHandlerResolver.resolve(options);
-    outputHandler.handle(options, accessToken);
+    outputHandler.handleOutput(options, tokens);
   }
 
   private validateOptions(options: GenerateTokenOptions): void {
@@ -49,11 +53,9 @@ export class GenerateTokenCommand {
     }
   }
 
-  private parseAccessToken(options: GenerateTokenOptions, accessToken: string) {
-    if (options.addPrefixToOutput) {
-      accessToken = `Bearer ${accessToken}`;
+  private parseAccessToken(options: GenerateTokenOptions, tokens: Tokens): void {
+    if (options.addPrefixToAccessToken) {
+      tokens.accessToken = `Bearer ${tokens.accessToken}`;
     }
-
-    return accessToken;
   }
 }
