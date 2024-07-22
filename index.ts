@@ -1,14 +1,8 @@
 #!/usr/bin/env node
 
 import { Command } from '@commander-js/extra-typings';
-import { GenerateTokenCommand } from './commands/generate-token-command/generate-token-command.js';
-import { Logger } from './core/services/logger.js';
-import { AuthConfigParser } from './commands/generate-token-command/services/auth-config-parser.js';
 import { GenerateTokenOptions } from './commands/generate-token-command/models/generate-token-options.js';
-import { FilesHandler } from './core/services/files-handler.js';
-import { AuthHandlerResolver } from './commands/generate-token-command/services/auth-handlers/auth-handler-resolver.js';
-import { OutputHandlerResolver } from './commands/generate-token-command/services/output-handlers/output-handler-resolver.js';
-import { FileOutputHandler } from './commands/generate-token-command/services/output-handlers/file-output-handler.js';
+import { buildGenerateTokenCommand } from './commands/generate-token-command/generate-token-command-builder.js';
 
 const program = new Command();
 program
@@ -28,19 +22,7 @@ program
   .option('--not-use-refresh-token')
   .action(async (options: GenerateTokenOptions, command) => {
     try {
-      const filesHandler = new FilesHandler();
-      const logger = new Logger();
-      const authConfigParser = new AuthConfigParser(filesHandler);
-      const authHandlerResolver = new AuthHandlerResolver();
-      const fileOutputHandler = new FileOutputHandler(filesHandler);
-      const outputHandlerResolver = new OutputHandlerResolver(filesHandler, logger);
-      const generateTokenCommand = new GenerateTokenCommand(
-        filesHandler,
-        authConfigParser,
-        fileOutputHandler,
-        authHandlerResolver,
-        outputHandlerResolver,
-      );
+      const generateTokenCommand = buildGenerateTokenCommand();
       await generateTokenCommand.runAsync(options);
     } catch (error) {
       command.error(`error: ${(error as Error)?.message}`);

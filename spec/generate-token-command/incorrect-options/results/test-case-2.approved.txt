@@ -1,0 +1,1 @@
+The given options are incorrect. Validation errors: '{"configFilePath":"Path from --config-file-path option doesn't exist.","env":"--env option is required"}'.
