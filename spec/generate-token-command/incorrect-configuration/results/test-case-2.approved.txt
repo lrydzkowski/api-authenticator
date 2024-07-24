@@ -1,0 +1,1 @@
+The given configuration is incorrect. Validation errors: '{"clientId":"You have to add 'clientId' property to the configuration."}'.

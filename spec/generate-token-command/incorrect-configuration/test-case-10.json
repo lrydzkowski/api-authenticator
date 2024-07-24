@@ -1,0 +1,9 @@
+{
+  "app - dev": {
+    "clientId": "client_id",
+    "clientSecret": "",
+    "scope": "openid offline_access",
+    "tokenEndpoint": "https://login.microsoftonline.com/{tenant_id}/oauth2/token",
+    "flow": "client_credentials"
+  }
+}

@@ -21,6 +21,17 @@ export class AuthConfigParser implements IAuthConfigParser {
       );
     }
 
-    return authConfig[env];
+    const envAuthConfig: AuthConfig = authConfig[env];
+    envAuthConfig.clientId = envAuthConfig.clientId?.trim() ?? null;
+    envAuthConfig.clientSecret = envAuthConfig.clientSecret?.trim() ?? null;
+    envAuthConfig.redirectUri = envAuthConfig.redirectUri?.trim() ?? '';
+    envAuthConfig.scope = envAuthConfig.scope?.trim();
+    envAuthConfig.authorizationEndpoint = envAuthConfig.authorizationEndpoint?.trim();
+    envAuthConfig.tokenEndpoint = envAuthConfig.tokenEndpoint?.trim() ?? '';
+    envAuthConfig.audience = envAuthConfig.audience?.trim() ?? '';
+    envAuthConfig.resource = envAuthConfig.resource?.trim() ?? '';
+    envAuthConfig.origin = envAuthConfig.origin?.trim() ?? '';
+
+    return envAuthConfig;
   }
 }

@@ -1,0 +1,1 @@
+The given configuration is incorrect. Validation errors: '{"authorizationEndpoint":"You have to add 'authorizationEndpoint' property to the configuration."}'.

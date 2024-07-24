@@ -1,0 +1,1 @@
+The given configuration is incorrect. Validation errors: '{"flow":"You have to add 'flow' property to the configuration."}'.
