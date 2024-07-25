@@ -2,6 +2,18 @@ import { buildGenerateTokenCommand } from '../../commands/generate-token-command
 import { verify } from 'approvals';
 import { incorrectOptionsTestCases } from './incorrect-options/incorrect-options-test-cases';
 import { incorrectConfigurationTestCase } from './incorrect-configuration/incorrect-configuration-test-cases';
+import { Tokens } from '../../commands/generate-token-command/models/tokens';
+import { anything, deepEqual, instance, mock, verify as tsMockitoVerify, when } from 'ts-mockito';
+import { GenerateTokenOptions } from '../../commands/generate-token-command/models/generate-token-options';
+import { IFilesHandler } from '../../core/services/files-handler';
+import * as fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { IAuthHandler } from '../../commands/generate-token-command/services/auth-handlers/auth-handler';
+import { IOutputHandler } from '../../commands/generate-token-command/services/output-handlers/output-handler';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 describe('Generate token command', () => {
   incorrectOptionsTestCases.forEach((testCase) => {
@@ -21,7 +33,7 @@ describe('Generate token command', () => {
   });
 
   incorrectConfigurationTestCase.forEach((testCase) => {
-    it(`should return validation errors when incorrect configuration - test case ${testCase.testCaseId}, configuration '${testCase.configuration}'`, async () => {
+    it(`should return validation errors when incorrect configuration - test case ${testCase.testCaseId}`, async () => {
       try {
         const generateTokenCommand = buildGenerateTokenCommand(testCase.filesHandler);
         await generateTokenCommand.runAsync(testCase.options);
@@ -34,5 +46,71 @@ describe('Generate token command', () => {
         );
       }
     });
+  });
+
+  it(`should show tokens in console when authorization code flow is used`, async () => {
+    const tokens: Tokens = {
+      accessToken: 'accessTokenTest',
+      refreshToken: 'refreshTokenTest',
+    };
+
+    const correctOptions: GenerateTokenOptions = {
+      configFilePath: './test/test-config.json',
+      env: 'app - dev',
+    };
+
+    const configuration = fs.readFileSync(__dirname + '/correct/test-case-1-config.json', 'utf-8');
+
+    const mockedFilesHandler = mock<IFilesHandler>();
+    when(mockedFilesHandler.exists(correctOptions.configFilePath)).thenReturn(true);
+    when(mockedFilesHandler.read(correctOptions.configFilePath)).thenReturn(configuration);
+    const filesHandler = instance(mockedFilesHandler);
+
+    const mockedAuthHandler = mock<IAuthHandler>();
+    when(mockedAuthHandler.getTokensAsync(anything(), anything())).thenResolve(tokens);
+    const authHandler = instance(mockedAuthHandler);
+
+    const mockedOutputHandler = mock<IOutputHandler>();
+    const outputHandler = instance(mockedOutputHandler);
+
+    const generateTokenCommand = buildGenerateTokenCommand(filesHandler, authHandler, null, null, outputHandler);
+    await generateTokenCommand.runAsync(correctOptions);
+
+    const expectedOptions: GenerateTokenOptions = JSON.parse(JSON.stringify(correctOptions));
+    const expectedTokens: Tokens = JSON.parse(JSON.stringify(tokens));
+    tsMockitoVerify(mockedOutputHandler.handleOutput(deepEqual(expectedOptions), deepEqual(expectedTokens))).once();
+  });
+
+  it(`should show tokens in console when client credentials flow is used`, async () => {
+    const tokens: Tokens = {
+      accessToken: 'accessTokenTest',
+      refreshToken: 'refreshTokenTest',
+    };
+
+    const correctOptions: GenerateTokenOptions = {
+      configFilePath: './test/test-config.json',
+      env: 'app - dev',
+    };
+
+    const configuration = fs.readFileSync(__dirname + '/correct/test-case-2-config.json', 'utf-8');
+
+    const mockedFilesHandler = mock<IFilesHandler>();
+    when(mockedFilesHandler.exists(correctOptions.configFilePath)).thenReturn(true);
+    when(mockedFilesHandler.read(correctOptions.configFilePath)).thenReturn(configuration);
+    const filesHandler = instance(mockedFilesHandler);
+
+    const mockedAuthHandler = mock<IAuthHandler>();
+    when(mockedAuthHandler.getTokensAsync(anything(), anything())).thenResolve(tokens);
+    const authHandler = instance(mockedAuthHandler);
+
+    const mockedOutputHandler = mock<IOutputHandler>();
+    const outputHandler = instance(mockedOutputHandler);
+
+    const generateTokenCommand = buildGenerateTokenCommand(filesHandler, null, authHandler, null, outputHandler);
+    await generateTokenCommand.runAsync(correctOptions);
+
+    const expectedOptions: GenerateTokenOptions = JSON.parse(JSON.stringify(correctOptions));
+    const expectedTokens: Tokens = JSON.parse(JSON.stringify(tokens));
+    tsMockitoVerify(mockedOutputHandler.handleOutput(deepEqual(expectedOptions), deepEqual(expectedTokens))).once();
   });
 });

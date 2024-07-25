@@ -22,7 +22,7 @@ const mockFilesHandler = (configuration: string): IFilesHandler => {
   return filesHandler;
 };
 
-const buildTestCase = (testCaseId: number, configurationFilePath: string): IncorrectConfigurationTestCases => {
+const buildTestCase = (testCaseId: number, configurationFilePath: string): IncorrectConfigurationTestCase => {
   const configuration = fs.readFileSync(configurationFilePath, 'utf-8');
 
   return {
@@ -33,14 +33,14 @@ const buildTestCase = (testCaseId: number, configurationFilePath: string): Incor
   };
 };
 
-interface IncorrectConfigurationTestCases {
+interface IncorrectConfigurationTestCase {
   testCaseId: number;
   options: GenerateTokenOptions;
   configuration: string;
   filesHandler: IFilesHandler;
 }
 
-export const incorrectConfigurationTestCase: IncorrectConfigurationTestCases[] = [
+export const incorrectConfigurationTestCase: IncorrectConfigurationTestCase[] = [
   buildTestCase(1, __dirname + '/test-case-1.json'),
   buildTestCase(2, __dirname + '/test-case-2.json'),
   buildTestCase(3, __dirname + '/test-case-3.json'),
