@@ -57,10 +57,12 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     }
 
     const newRefreshToken = responseBody?.refresh_token ?? null;
+    const newIdToken = responseBody?.id_token ?? null;
 
     return {
       accessToken,
       refreshToken: newRefreshToken,
+      idToken: newIdToken,
     };
   }
 
