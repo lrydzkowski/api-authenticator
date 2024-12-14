@@ -192,10 +192,12 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     }
 
     const refreshToken = responseBody?.refresh_token ?? null;
+    const idToken = responseBody?.id_token ?? null;
 
     return {
       accessToken,
       refreshToken,
+      idToken,
     };
   }
 }

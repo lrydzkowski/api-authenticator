@@ -9,5 +9,6 @@ export class ConsoleOutputHandler implements IOutputHandler {
   handleOutput(options: GenerateTokenOptions, tokens: Tokens): void {
     this.logger.logInfo(`Access token:\n${tokens.accessToken}`);
     this.logger.logInfo(`Refresh token: \n${tokens.refreshToken ?? 'no refresh token'}`);
+    this.logger.logInfo(`Id token: \n${tokens.idToken ?? 'no id token'}`);
   }
 }

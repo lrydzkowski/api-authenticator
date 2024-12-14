@@ -5,6 +5,7 @@ export interface GenerateTokenOptions {
   outputFilePath?: string;
   outputFileAccessTokenKey?: string;
   outputFileRefreshTokenKey?: string;
+  outputFileIdTokenKey?: string;
   outputFileWinNewLineChar?: boolean;
   notUseRefreshToken?: boolean;
 }

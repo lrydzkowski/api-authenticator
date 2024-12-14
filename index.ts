@@ -18,6 +18,7 @@ program
   .option('--output-file-path <output_file_path>')
   .option('--output-file-access-token-key <output_file_access_token_key>')
   .option('--output-file-refresh-token-key <output_file_refresh_token_key>')
+  .option('--output-file-id-token-key <output_file_id_token_key>')
   .option('--output-file-win-new-line-char')
   .option('--not-use-refresh-token')
   .action(async (options: GenerateTokenOptions, command) => {

@@ -119,6 +119,7 @@ describe('Generate token command', () => {
     const tokens: Tokens = {
       accessToken: 'accessTokenTest',
       refreshToken: 'refreshTokenTest',
+      idToken: 'idTokenTest',
     };
     const expectedTokens: Tokens = JSON.parse(JSON.stringify(tokens));
     expectedTokens.accessToken = `Bearer ${expectedTokens.accessToken}`;
@@ -130,6 +131,7 @@ describe('Generate token command', () => {
       outputFilePath: './test/test-output.json',
       outputFileAccessTokenKey: "'test1'.{env}.'accessToken'",
       outputFileRefreshTokenKey: "'test1'.{env}.'refreshToken'",
+      outputFileIdTokenKey: "'test1'.{env}.'idToken'",
       outputFileWinNewLineChar: true,
     };
     const expectedOptions: GenerateTokenOptions = JSON.parse(JSON.stringify(correctOptions));

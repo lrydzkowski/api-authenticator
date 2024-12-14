@@ -42,6 +42,7 @@ export class FileOutputHandler implements IOutputHandler, IFileOutputHandler {
 
     this.writeValue(options, options.outputFileAccessTokenKey ?? null, jsonData, tokens.accessToken);
     this.writeValue(options, options.outputFileRefreshTokenKey ?? null, jsonData, tokens.refreshToken);
+    this.writeValue(options, options.outputFileIdTokenKey ?? null, jsonData, tokens.idToken ?? null);
 
     let modifiedJson = JSON.stringify(jsonData, null, 2);
     if (options.outputFileWinNewLineChar) {
