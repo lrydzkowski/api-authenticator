@@ -1,5 +1,4 @@
 import { buildGenerateTokenCommand } from '../../commands/generate-token-command/generate-token-command-builder';
-import { verify } from 'approvals';
 import { incorrectOptionsTestCases } from './incorrect-options/incorrect-options-test-cases';
 import { incorrectConfigurationTestCase } from './incorrect-configuration/incorrect-configuration-test-cases';
 import { Tokens } from '../../commands/generate-token-command/models/tokens';
@@ -24,11 +23,7 @@ describe('Generate token command', () => {
         await generateTokenCommand.runAsync(testCase.options);
         fail('Validation should throw an exception');
       } catch (error) {
-        verify(
-          `${import.meta.dirname}/incorrect-options/results`,
-          `test-case-${testCase.testCaseId}`,
-          (error as Error)?.message ?? '',
-        );
+        expect((error as Error)?.message ?? '').toMatch(testCase.expectedErrorMessage);
       }
     });
   });
@@ -40,11 +35,7 @@ describe('Generate token command', () => {
         await generateTokenCommand.runAsync(testCase.options);
         fail('Validation should throw an exception');
       } catch (error) {
-        verify(
-          `${import.meta.dirname}/incorrect-configuration/results`,
-          `test-case-${testCase.testCaseId}`,
-          (error as Error)?.message ?? '',
-        );
+        expect((error as Error)?.message ?? '').toMatch(testCase.expectedErrorMessage);
       }
     });
   });

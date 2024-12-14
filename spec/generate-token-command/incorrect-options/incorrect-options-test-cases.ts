@@ -1,6 +1,12 @@
 import { mock, when, instance } from 'ts-mockito';
 import { GenerateTokenOptions } from '../../../commands/generate-token-command/models/generate-token-options';
 import { FilesHandler, IFilesHandler } from '../../../core/services/files-handler';
+import * as fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const mockFilesHandler = (
   configFilePath: string,
@@ -23,72 +29,96 @@ const correctOptions: GenerateTokenOptions = {
   env: 'dev',
 };
 
+const buildTestCase = (
+  testCaseId: number,
+  options: GenerateTokenOptions,
+  filesHandler: IFilesHandler,
+  expectedErrorMessageFilePath: string,
+): IncorrectOptionsTestCase => {
+  const expectedErrorMessage = fs.readFileSync(expectedErrorMessageFilePath, 'utf-8')?.trim() ?? '';
+
+  return {
+    testCaseId,
+    options,
+    filesHandler,
+    expectedErrorMessage,
+  };
+};
+
 interface IncorrectOptionsTestCase {
   testCaseId: number;
   options: GenerateTokenOptions;
   filesHandler: IFilesHandler;
+  expectedErrorMessage: string;
 }
 
 export const incorrectOptionsTestCases: IncorrectOptionsTestCase[] = [
-  {
-    testCaseId: 1,
-    options: {
+  buildTestCase(
+    1,
+    {
       ...correctOptions,
     },
-    filesHandler: mockFilesHandler(correctOptions.configFilePath, false),
-  },
-  {
-    testCaseId: 2,
-    options: {
+    mockFilesHandler(correctOptions.configFilePath, false),
+    __dirname + '/results/test-case-1.approved.txt',
+  ),
+  buildTestCase(
+    2,
+    {
       ...correctOptions,
       env: '',
     },
-    filesHandler: mockFilesHandler(correctOptions.configFilePath, false),
-  },
-  {
-    testCaseId: 3,
-    options: {
+    mockFilesHandler(correctOptions.configFilePath, false),
+    __dirname + '/results/test-case-2.approved.txt',
+  ),
+  buildTestCase(
+    3,
+    {
       ...correctOptions,
       outputFilePath: './test.json',
     },
-    filesHandler: mockFilesHandler(correctOptions.configFilePath, true, './test.json', false),
-  },
-  {
-    testCaseId: 4,
-    options: {
+    mockFilesHandler(correctOptions.configFilePath, true, './test.json', false),
+    __dirname + '/results/test-case-3.approved.txt',
+  ),
+  buildTestCase(
+    4,
+    {
       ...correctOptions,
       outputFilePath: './test.json',
       outputFileAccessTokenKey: undefined,
     },
-    filesHandler: mockFilesHandler(correctOptions.configFilePath, true, './test.json', true),
-  },
-  {
-    testCaseId: 5,
-    options: {
+    mockFilesHandler(correctOptions.configFilePath, true, './test.json', true),
+    __dirname + '/results/test-case-4.approved.txt',
+  ),
+  buildTestCase(
+    5,
+    {
       ...correctOptions,
       outputFilePath: './test.json',
       outputFileAccessTokenKey: '',
     },
-    filesHandler: mockFilesHandler(correctOptions.configFilePath, true, './test.json', true),
-  },
-  {
-    testCaseId: 6,
-    options: {
+    mockFilesHandler(correctOptions.configFilePath, true, './test.json', true),
+    __dirname + '/results/test-case-5.approved.txt',
+  ),
+  buildTestCase(
+    6,
+    {
       ...correctOptions,
       outputFilePath: './test.json',
       outputFileAccessTokenKey: "'test'.'test2'",
       outputFileRefreshTokenKey: undefined,
     },
-    filesHandler: mockFilesHandler(correctOptions.configFilePath, true, './test.json', true),
-  },
-  {
-    testCaseId: 7,
-    options: {
+    mockFilesHandler(correctOptions.configFilePath, true, './test.json', true),
+    __dirname + '/results/test-case-6.approved.txt',
+  ),
+  buildTestCase(
+    7,
+    {
       ...correctOptions,
       outputFilePath: './test.json',
       outputFileAccessTokenKey: "'test'.'test2'",
       outputFileRefreshTokenKey: '',
     },
-    filesHandler: mockFilesHandler(correctOptions.configFilePath, true, './test.json', true),
-  },
+    mockFilesHandler(correctOptions.configFilePath, true, './test.json', true),
+    __dirname + '/results/test-case-7.approved.txt',
+  ),
 ];

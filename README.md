@@ -117,7 +117,7 @@ After that it's possible to send requests in .http files. Example:
 
 ### Prerequisites
 
-- NodeJS 20+
+- NodeJS 22+
 - PowerShell Core
 
 ### Installation

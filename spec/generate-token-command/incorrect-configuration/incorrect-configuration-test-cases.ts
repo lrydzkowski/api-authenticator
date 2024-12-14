@@ -22,14 +22,20 @@ const mockFilesHandler = (configuration: string): IFilesHandler => {
   return filesHandler;
 };
 
-const buildTestCase = (testCaseId: number, configurationFilePath: string): IncorrectConfigurationTestCase => {
+const buildTestCase = (
+  testCaseId: number,
+  configurationFilePath: string,
+  expectedErrorMessageFilePath: string,
+): IncorrectConfigurationTestCase => {
   const configuration = fs.readFileSync(configurationFilePath, 'utf-8');
+  const expectedErrorMessage = fs.readFileSync(expectedErrorMessageFilePath, 'utf-8')?.trim() ?? '';
 
   return {
     testCaseId,
     options: correctOptions,
     configuration,
     filesHandler: mockFilesHandler(configuration),
+    expectedErrorMessage,
   };
 };
 
@@ -38,17 +44,18 @@ interface IncorrectConfigurationTestCase {
   options: GenerateTokenOptions;
   configuration: string;
   filesHandler: IFilesHandler;
+  expectedErrorMessage: string;
 }
 
 export const incorrectConfigurationTestCase: IncorrectConfigurationTestCase[] = [
-  buildTestCase(1, __dirname + '/test-case-1.json'),
-  buildTestCase(2, __dirname + '/test-case-2.json'),
-  buildTestCase(3, __dirname + '/test-case-3.json'),
-  buildTestCase(4, __dirname + '/test-case-4.json'),
-  buildTestCase(5, __dirname + '/test-case-5.json'),
-  buildTestCase(6, __dirname + '/test-case-6.json'),
-  buildTestCase(7, __dirname + '/test-case-7.json'),
-  buildTestCase(8, __dirname + '/test-case-8.json'),
-  buildTestCase(9, __dirname + '/test-case-9.json'),
-  buildTestCase(10, __dirname + '/test-case-10.json'),
+  buildTestCase(1, __dirname + '/test-case-1.json', __dirname + '/results/test-case-1.approved.txt'),
+  buildTestCase(2, __dirname + '/test-case-2.json', __dirname + '/results/test-case-2.approved.txt'),
+  buildTestCase(3, __dirname + '/test-case-3.json', __dirname + '/results/test-case-3.approved.txt'),
+  buildTestCase(4, __dirname + '/test-case-4.json', __dirname + '/results/test-case-4.approved.txt'),
+  buildTestCase(5, __dirname + '/test-case-5.json', __dirname + '/results/test-case-5.approved.txt'),
+  buildTestCase(6, __dirname + '/test-case-6.json', __dirname + '/results/test-case-6.approved.txt'),
+  buildTestCase(7, __dirname + '/test-case-7.json', __dirname + '/results/test-case-7.approved.txt'),
+  buildTestCase(8, __dirname + '/test-case-8.json', __dirname + '/results/test-case-8.approved.txt'),
+  buildTestCase(9, __dirname + '/test-case-9.json', __dirname + '/results/test-case-9.approved.txt'),
+  buildTestCase(10, __dirname + '/test-case-10.json', __dirname + '/results/test-case-10.approved.txt'),
 ];
