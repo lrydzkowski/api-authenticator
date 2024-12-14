@@ -1,6 +1,6 @@
 {
   "name": "@lrydzkowski/api-authenticator",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A console app generating an access token for APIs protected by OAuth 2.0 protocol",
   "main": "dist/index.js",
   "bin": {
