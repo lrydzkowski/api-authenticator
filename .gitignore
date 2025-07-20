@@ -133,3 +133,4 @@ docs/sample-config-files/*-with-secrets.json
 docs/sample-output-files/*-with-secrets.json
 TODO.md
 local_config
+.claude/settings.local.json
