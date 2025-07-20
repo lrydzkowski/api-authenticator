@@ -151,9 +151,12 @@ export class AuthorizationCodeHandler implements IAuthHandler {
       return;
     }
 
-    await page.type(config.autoFill.emailSelector ?? '', config.autoFill.email ?? '');
-    if (config.autoFill.passwordSelector) {
-      await page.type(config.autoFill.passwordSelector ?? '', config.autoFill.password ?? '');
+    if (config.autoFill.emailSelector && config.autoFill.email) {
+      await page.type(config.autoFill.emailSelector, config.autoFill.email);
+    }
+
+    if (config.autoFill.passwordSelector && config.autoFill.password) {
+      await page.type(config.autoFill.passwordSelector, config.autoFill.password);
     }
 
     if (config.autoFill.submitSelector) {
