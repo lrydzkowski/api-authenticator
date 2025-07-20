@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer';
+import puppeteer, { Page } from 'puppeteer';
 import { AuthConfig } from '../../models/auth-config.js';
 import { IAuthHandler } from './auth-handler.js';
 import * as oauth from 'oauth4webapi';
@@ -25,7 +25,7 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     const state = oauth.generateRandomState();
 
     const authUrl = await this.buildAuthUrlAsync(config, codeVerifier, state);
-    const authResponse = await this.getAuthResponseAsync(authUrl);
+    const authResponse = await this.getAuthResponseAsync(authUrl, config);
     const authResponseValidationResult = this.validateAuthResponse(authServer, client, authResponse, state);
     const origin = config.origin ?? null;
     const tokens = await this.sendAuthorizationCodeGrantRequestAsync(
@@ -99,7 +99,7 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     authUrl.searchParams.set(searchParamName, config[configParamName] as string);
   }
 
-  private async getAuthResponseAsync(authorizationUrl: URL): Promise<AuthResponse> {
+  private async getAuthResponseAsync(authorizationUrl: URL, config: AuthConfig): Promise<AuthResponse> {
     const timeout = 600000; // 10 minutes
     const browser = await puppeteer.launch({
       headless: false,
@@ -115,6 +115,9 @@ export class AuthorizationCodeHandler implements IAuthHandler {
 
       const page = pages[0];
       await page.goto(authorizationUrl.toString(), { waitUntil: 'networkidle0' });
+
+      await this.autoFillCredentials(page, config);
+
       await page.setRequestInterception(true);
       const resultPromise = new Promise<AuthResponse>((resolve) => {
         page.on('request', (request) => {
@@ -140,6 +143,24 @@ export class AuthorizationCodeHandler implements IAuthHandler {
       return result;
     } finally {
       await browser.close();
+    }
+  }
+
+  private async autoFillCredentials(page: Page, config: AuthConfig) {
+    if (!config.autoFill) {
+      return;
+    }
+
+    if (config.autoFill.emailSelector && config.autoFill.email) {
+      await page.type(config.autoFill.emailSelector, config.autoFill.email);
+    }
+
+    if (config.autoFill.passwordSelector && config.autoFill.password) {
+      await page.type(config.autoFill.passwordSelector, config.autoFill.password);
+    }
+
+    if (config.autoFill.submitSelector) {
+      await page.click(config.autoFill.submitSelector);
     }
   }
 

@@ -50,7 +50,7 @@ export class ClientCredentialsHandler implements IAuthHandler {
   }
 
   private addParamIfExists(parameters: Record<string, string>, config: AuthConfig, paramName: keyof AuthConfig): void {
-    if (!config[paramName]) {
+    if (!config[paramName] || typeof config[paramName] !== 'string') {
       return;
     }
 

@@ -9,4 +9,11 @@ export interface AuthConfig {
   resource?: string;
   origin?: string;
   flow: 'authorization_code' | 'client_credentials';
+  autoFill?: {
+    emailSelector?: string;
+    email?: string;
+    passwordSelector?: string;
+    password?: string;
+    submitSelector?: string;
+  };
 }

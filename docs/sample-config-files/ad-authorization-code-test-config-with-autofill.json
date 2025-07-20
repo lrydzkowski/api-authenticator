@@ -1,0 +1,16 @@
+{
+  "App - local with autofill": {
+    "clientId": "{client_id}",
+    "scope": "openid offline_access",
+    "authorizationEndpoint": "https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/authorize",
+    "tokenEndpoint": "https://login.microsoftonline.com/{tenant_id}/oauth2/token",
+    "flow": "authorization_code",
+    "autoFill": {
+      "emailSelector": "input[type='email']",
+      "email": "user@example.com",
+      "passwordSelector": "input[type='password']",
+      "password": "your_password_here",
+      "submitSelector": "button[type='submit']"
+    }
+  }
+}
