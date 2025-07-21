@@ -3,8 +3,16 @@ import { AuthConfig } from '../../models/auth-config.js';
 import { IAuthHandler } from './auth-handler.js';
 import * as oauth from 'oauth4webapi';
 import { Tokens } from '../../models/tokens.js';
+import { IFilesHandler } from '../../../../core/services/files-handler.js';
+import { pathToFileURL } from 'url';
+import { ILogger } from '../../../../core/services/logger.js';
 
 export class AuthorizationCodeHandler implements IAuthHandler {
+  constructor(
+    private logger: ILogger,
+    private filesHandler: IFilesHandler,
+  ) {}
+
   public async getTokensAsync(config: AuthConfig, refreshToken: string | null): Promise<Tokens> {
     const authServer: oauth.AuthorizationServer = {
       authorization_endpoint: config.authorizationEndpoint,
@@ -116,6 +124,7 @@ export class AuthorizationCodeHandler implements IAuthHandler {
       const page = pages[0];
       await page.goto(authorizationUrl.toString(), { waitUntil: 'networkidle0' });
 
+      await this.executeCustomScript(page, config);
       await this.autoFillCredentials(page, config);
 
       await page.setRequestInterception(true);
@@ -143,6 +152,31 @@ export class AuthorizationCodeHandler implements IAuthHandler {
       return result;
     } finally {
       await browser.close();
+    }
+  }
+
+  private async executeCustomScript(page: Page, config: AuthConfig) {
+    if (!config.customScriptPath) {
+      return;
+    }
+
+    if (!this.filesHandler.exists(config.customScriptPath)) {
+      this.logger.logError(`Custom script file not found: ${config.customScriptPath}`);
+    }
+
+    try {
+      const scriptUrl = pathToFileURL(config.customScriptPath).href;
+
+      const customFunction = await import(scriptUrl);
+      const fn = customFunction.default || customFunction;
+
+      if (typeof fn !== 'function') {
+        this.logger.logError('Custom script must export a function as default or named export');
+      }
+
+      await fn(page, config);
+    } catch (error) {
+      this.logger.logError(`Error executing custom script: ${error}`);
     }
   }
 

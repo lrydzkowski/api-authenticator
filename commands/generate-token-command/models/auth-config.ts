@@ -16,4 +16,5 @@ export interface AuthConfig {
     password?: string;
     submitSelector?: string;
   };
+  customScriptPath?: string;
 }

@@ -31,6 +31,7 @@ export class AuthConfigParser implements IAuthConfigParser {
     envAuthConfig.audience = envAuthConfig.audience?.trim() ?? '';
     envAuthConfig.resource = envAuthConfig.resource?.trim() ?? '';
     envAuthConfig.origin = envAuthConfig.origin?.trim() ?? '';
+    envAuthConfig.customScriptPath = envAuthConfig.customScriptPath?.trim();
 
     return envAuthConfig;
   }
