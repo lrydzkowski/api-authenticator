@@ -17,4 +17,10 @@ export interface AuthConfig {
     submitSelector?: string;
   };
   customScriptPath?: string;
+  keyVault?: {
+    vaultUrl: string;
+    secretMappings?: {
+      [configField: string]: string;
+    };
+  };
 }

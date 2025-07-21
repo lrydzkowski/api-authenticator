@@ -65,7 +65,7 @@ describe('Generate token command', () => {
     const mockedOutputHandler = mock<IOutputHandler>();
     const outputHandler = instance(mockedOutputHandler);
 
-    const generateTokenCommand = buildGenerateTokenCommand(filesHandler, authHandler, null, null, outputHandler);
+    const generateTokenCommand = buildGenerateTokenCommand(filesHandler, null, authHandler, null, null, outputHandler);
     await generateTokenCommand.runAsync(correctOptions);
 
     const expectedOptions: GenerateTokenOptions = JSON.parse(JSON.stringify(correctOptions));
@@ -98,7 +98,7 @@ describe('Generate token command', () => {
     const mockedOutputHandler = mock<IOutputHandler>();
     const outputHandler = instance(mockedOutputHandler);
 
-    const generateTokenCommand = buildGenerateTokenCommand(filesHandler, null, authHandler, null, outputHandler);
+    const generateTokenCommand = buildGenerateTokenCommand(filesHandler, null, null, authHandler, null, outputHandler);
     await generateTokenCommand.runAsync(correctOptions);
 
     const expectedOptions: GenerateTokenOptions = JSON.parse(JSON.stringify(correctOptions));
@@ -144,7 +144,7 @@ describe('Generate token command', () => {
     when(mockedOutputHandler.getRefreshToken(deepEqual(optionsForGettingRefreshToken))).thenReturn(tokens.refreshToken);
     const outputHandler = instance(mockedOutputHandler);
 
-    const generateTokenCommand = buildGenerateTokenCommand(filesHandler, authHandler, null, outputHandler, null);
+    const generateTokenCommand = buildGenerateTokenCommand(filesHandler, null, authHandler, null, outputHandler, null);
     await generateTokenCommand.runAsync(correctOptions);
 
     tsMockitoVerify(mockedOutputHandler.handleOutput(deepEqual(expectedOptions), deepEqual(expectedTokens))).once();

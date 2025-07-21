@@ -28,5 +28,31 @@ export class AuthConfigValidator extends Validator<AuthConfig> {
       .notEmpty()
       .withMessage("You have to add 'tokenEndpoint' property to the configuration.");
     this.ruleFor('flow').notEmpty().withMessage("You have to add 'flow' property to the configuration.");
+    this.ruleFor('keyVault')
+      .must((keyVault) => {
+        if (!keyVault) {
+          return true;
+        }
+
+        return keyVault.vaultUrl?.trim()?.length > 0;
+      })
+      .withMessage("When 'keyVault' is specified, 'vaultUrl' is required and cannot be empty.");
+    this.ruleFor('keyVault')
+      .must((keyVault) => {
+        if (!keyVault?.vaultUrl) {
+          return true;
+        }
+
+        try {
+          new URL(keyVault.vaultUrl);
+
+          return keyVault.vaultUrl.includes('vault.azure.net');
+        } catch {
+          return false;
+        }
+      })
+      .withMessage(
+        "'keyVault.vaultUrl' must be a valid Azure Key Vault URL (e.g., https://your-vault.vault.azure.net).",
+      );
   }
 }
