@@ -22,7 +22,7 @@ export class GenerateTokenCommand {
   public async runAsync(options: GenerateTokenOptions): Promise<void> {
     this.validateOptions(options);
 
-    const authConfig: AuthConfig = this.authConfigParser.parse(options.configFilePath, options.env);
+    const authConfig: AuthConfig = await this.authConfigParser.parse(options.configFilePath, options.env);
     this.validateAuthConfig(authConfig);
 
     const refreshToken = this.fileOutputHandler.getRefreshToken(options);

@@ -1,0 +1,14 @@
+{
+  "app - dev": {
+    "clientId": "test-client-id",
+    "clientSecret": "test-secret",
+    "tokenEndpoint": "https://login.microsoftonline.com/test-tenant/oauth2/token",
+    "flow": "client_credentials",
+    "keyVault": {
+      "vaultUrl": null,
+      "secretMappings": {
+        "clientSecret": "my-secret"
+      }
+    }
+  }
+}

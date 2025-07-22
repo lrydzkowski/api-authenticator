@@ -1,14 +1,18 @@
 import { AuthConfig } from '../models/auth-config.js';
 import { IFilesHandler } from '../../../core/services/files-handler.js';
+import { IKeyVaultService } from './key-vault-service.js';
 
 export interface IAuthConfigParser {
-  parse(configPath: string, env: string): AuthConfig;
+  parse(configPath: string, env: string): Promise<AuthConfig>;
 }
 
 export class AuthConfigParser implements IAuthConfigParser {
-  constructor(private filesHandler: IFilesHandler) {}
+  constructor(
+    private filesHandler: IFilesHandler,
+    private keyVaultService: IKeyVaultService,
+  ) {}
 
-  public parse(configFilePath: string, env: string): AuthConfig {
+  public async parse(configFilePath: string, env: string): Promise<AuthConfig> {
     if (!this.filesHandler.exists(configFilePath)) {
       throw new Error(`A configuration file (path = '${configFilePath}') doesn't exist.`);
     }
@@ -31,7 +35,18 @@ export class AuthConfigParser implements IAuthConfigParser {
     envAuthConfig.audience = envAuthConfig.audience?.trim() ?? '';
     envAuthConfig.resource = envAuthConfig.resource?.trim() ?? '';
     envAuthConfig.origin = envAuthConfig.origin?.trim() ?? '';
+    envAuthConfig.customScriptPath = envAuthConfig.customScriptPath?.trim();
+    if (envAuthConfig.keyVault) {
+      envAuthConfig.keyVault.vaultUrl = envAuthConfig.keyVault.vaultUrl?.trim() ?? '';
+      if (envAuthConfig.keyVault.secretMappings) {
+        for (const [key, value] of Object.entries(envAuthConfig.keyVault.secretMappings)) {
+          envAuthConfig.keyVault.secretMappings[key] = value?.trim() ?? '';
+        }
+      }
+    }
 
-    return envAuthConfig;
+    const configWithKeyVaultOverrides = await this.keyVaultService.applySecretOverrides(envAuthConfig);
+
+    return configWithKeyVaultOverrides;
   }
 }

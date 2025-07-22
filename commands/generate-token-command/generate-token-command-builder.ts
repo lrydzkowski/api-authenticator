@@ -1,5 +1,5 @@
 import { FilesHandler, IFilesHandler } from '../../core/services/files-handler.js';
-import { Logger } from '../../core/services/logger.js';
+import { ILogger, Logger } from '../../core/services/logger.js';
 import { GenerateTokenCommand } from './generate-token-command.js';
 import { AuthConfigParser } from './services/auth-config-parser.js';
 import { AuthHandlerResolver } from './services/auth-handlers/auth-handler-resolver.js';
@@ -10,18 +10,22 @@ import { ConsoleOutputHandler } from './services/output-handlers/console-output-
 import { FileOutputHandler, IFileOutputHandler } from './services/output-handlers/file-output-handler.js';
 import { OutputHandlerResolver } from './services/output-handlers/output-handler-resolver.js';
 import { IOutputHandler } from './services/output-handlers/output-handler.js';
+import { IKeyVaultService, KeyVaultService } from './services/key-vault-service.js';
 
 export const buildGenerateTokenCommand = (
   filesHandler: IFilesHandler | null = null,
+  logger: ILogger | null = null,
   authorizationCodeHandler: IAuthHandler | null = null,
   clientCredentialsHandler: IAuthHandler | null = null,
   fileOutputHandler: (IOutputHandler & IFileOutputHandler) | null = null,
   consoleOutputHandler: IOutputHandler | null = null,
+  keyVaultService: IKeyVaultService | null = null,
 ): GenerateTokenCommand => {
   filesHandler ??= new FilesHandler();
-  const logger = new Logger();
-  const authConfigParser = new AuthConfigParser(filesHandler);
-  authorizationCodeHandler ??= new AuthorizationCodeHandler();
+  logger ??= new Logger();
+  keyVaultService ??= new KeyVaultService(logger);
+  const authConfigParser = new AuthConfigParser(filesHandler, keyVaultService);
+  authorizationCodeHandler ??= new AuthorizationCodeHandler(logger, filesHandler);
   clientCredentialsHandler ??= new ClientCredentialsHandler();
   const authHandlerResolver = new AuthHandlerResolver(authorizationCodeHandler, clientCredentialsHandler);
   fileOutputHandler ??= new FileOutputHandler(filesHandler);
