@@ -58,4 +58,6 @@ export const incorrectConfigurationTestCase: IncorrectConfigurationTestCase[] = 
   buildTestCase(8, __dirname + '/test-case-8.json', __dirname + '/results/test-case-8.approved.txt'),
   buildTestCase(9, __dirname + '/test-case-9.json', __dirname + '/results/test-case-9.approved.txt'),
   buildTestCase(10, __dirname + '/test-case-10.json', __dirname + '/results/test-case-10.approved.txt'),
+  buildTestCase(11, __dirname + '/test-case-11.json', __dirname + '/results/test-case-11.approved.txt'),
+  buildTestCase(12, __dirname + '/test-case-12.json', __dirname + '/results/test-case-12.approved.txt'),
 ];

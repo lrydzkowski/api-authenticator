@@ -23,7 +23,7 @@ describe('Generate token command', () => {
         await generateTokenCommand.runAsync(testCase.options);
         fail('Validation should throw an exception');
       } catch (error) {
-        expect((error as Error)?.message ?? '').toMatch(testCase.expectedErrorMessage);
+        expect((error as Error)?.message ?? '').toBe(testCase.expectedErrorMessage);
       }
     });
   });
@@ -35,7 +35,7 @@ describe('Generate token command', () => {
         await generateTokenCommand.runAsync(testCase.options);
         fail('Validation should throw an exception');
       } catch (error) {
-        expect((error as Error)?.message ?? '').toMatch(testCase.expectedErrorMessage);
+        expect((error as Error)?.message ?? '').toBe(testCase.expectedErrorMessage);
       }
     });
   });

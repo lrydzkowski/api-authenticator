@@ -36,6 +36,14 @@ export class AuthConfigParser implements IAuthConfigParser {
     envAuthConfig.resource = envAuthConfig.resource?.trim() ?? '';
     envAuthConfig.origin = envAuthConfig.origin?.trim() ?? '';
     envAuthConfig.customScriptPath = envAuthConfig.customScriptPath?.trim();
+    if (envAuthConfig.keyVault) {
+      envAuthConfig.keyVault.vaultUrl = envAuthConfig.keyVault.vaultUrl?.trim() ?? '';
+      if (envAuthConfig.keyVault.secretMappings) {
+        for (const [key, value] of Object.entries(envAuthConfig.keyVault.secretMappings)) {
+          envAuthConfig.keyVault.secretMappings[key] = value?.trim() ?? '';
+        }
+      }
+    }
 
     const configWithKeyVaultOverrides = await this.keyVaultService.applySecretOverrides(envAuthConfig);
 

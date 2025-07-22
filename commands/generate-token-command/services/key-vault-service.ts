@@ -11,7 +11,7 @@ export class KeyVaultService implements IKeyVaultService {
   constructor(private logger: ILogger) {}
 
   public async applySecretOverrides(authConfig: AuthConfig): Promise<AuthConfig> {
-    if (!authConfig.keyVault?.secretMappings) {
+    if (!authConfig.keyVault?.vaultUrl || !authConfig.keyVault?.secretMappings) {
       return authConfig;
     }
 
