@@ -19,7 +19,7 @@ export class KeyVaultService implements IKeyVaultService {
       const credential = new DefaultAzureCredential();
       const client = new SecretClient(authConfig.keyVault.vaultUrl, credential);
 
-      const overriddenConfig = { ...authConfig };
+      const overriddenConfig = structuredClone(authConfig);
 
       for (const [configField, secretName] of Object.entries(authConfig.keyVault.secretMappings)) {
         try {
