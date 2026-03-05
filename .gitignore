@@ -129,8 +129,9 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-docs/sample-config-files/*-with-secrets.json
-docs/sample-output-files/*-with-secrets.json
+docs/sample-config-files/*-secrets.json
+docs/sample-output-files/*-secrets.json
 TODO.md
+TESTS.md
 local_config
 .claude/settings.local.json
