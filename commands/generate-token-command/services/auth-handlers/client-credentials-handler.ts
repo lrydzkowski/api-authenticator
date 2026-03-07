@@ -11,10 +11,10 @@ export class ClientCredentialsHandler implements IAuthHandler {
     };
     const client: oauth.Client = {
       client_id: config.clientId,
-      client_secret: config.clientSecret!,
     };
+    const clientAuth: oauth.ClientAuth = oauth.ClientSecretPost(config.clientSecret!);
 
-    const tokens = await this.sendClientCredentialsGrantRequestAsync(config, authServer, client);
+    const tokens = await this.sendClientCredentialsGrantRequestAsync(config, authServer, client, clientAuth);
 
     return tokens;
   }
@@ -23,9 +23,10 @@ export class ClientCredentialsHandler implements IAuthHandler {
     config: AuthConfig,
     authServer: oauth.AuthorizationServer,
     client: oauth.Client,
+    clientAuth: oauth.ClientAuth,
   ): Promise<Tokens> {
     const parameters: Record<string, string> = this.buildParameters(config);
-    const response: Response = await oauth.clientCredentialsGrantRequest(authServer, client, parameters);
+    const response: Response = await oauth.clientCredentialsGrantRequest(authServer, client, clientAuth, parameters);
     const responseBody = await response.json();
     const accessToken = responseBody?.access_token ?? null;
     if (accessToken === null) {
