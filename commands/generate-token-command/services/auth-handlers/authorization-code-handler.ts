@@ -21,10 +21,10 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     };
     const client: oauth.Client = {
       client_id: config.clientId,
-      token_endpoint_auth_method: 'none',
     };
+    const clientAuth: oauth.ClientAuth = oauth.None();
 
-    const refreshedTokens: Tokens | null = await this.refreshTokensAsync(authServer, client, refreshToken);
+    const refreshedTokens: Tokens | null = await this.refreshTokensAsync(authServer, client, clientAuth, refreshToken);
     if (refreshedTokens) {
       return refreshedTokens;
     }
@@ -39,6 +39,7 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     const tokens = await this.sendAuthorizationCodeGrantRequestAsync(
       authServer,
       client,
+      clientAuth,
       authResponseValidationResult,
       authResponse,
       codeVerifier,
@@ -51,13 +52,14 @@ export class AuthorizationCodeHandler implements IAuthHandler {
   private async refreshTokensAsync(
     authServer: oauth.AuthorizationServer,
     client: oauth.Client,
+    clientAuth: oauth.ClientAuth,
     refreshToken: string | null,
   ): Promise<Tokens | null> {
     if (!refreshToken) {
       return null;
     }
 
-    const response: Response = await oauth.refreshTokenGrantRequest(authServer, client, refreshToken);
+    const response: Response = await oauth.refreshTokenGrantRequest(authServer, client, clientAuth, refreshToken);
     const responseBody = await response.json();
     const accessToken = responseBody?.access_token ?? null;
     if (accessToken === null) {
@@ -204,22 +206,18 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     authResponse: AuthResponse,
     state: string,
   ) {
-    const authResponseValidationResult = oauth.validateAuthResponse(
+    return oauth.validateAuthResponse(
       authServer,
       client,
       authResponse.urlSearchParams,
       state,
     );
-    if (oauth.isOAuth2Error(authResponseValidationResult)) {
-      throw new Error(`OAuth 2.0 Error: '${authResponseValidationResult.error}'.`);
-    }
-
-    return authResponseValidationResult;
   }
 
   private async sendAuthorizationCodeGrantRequestAsync(
     authServer: oauth.AuthorizationServer,
     client: oauth.Client,
+    clientAuth: oauth.ClientAuth,
     authResponseValidationResult: URLSearchParams,
     authResponse: AuthResponse,
     codeVerifier: string,
@@ -235,6 +233,7 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     const response: Response = await oauth.authorizationCodeGrantRequest(
       authServer,
       client,
+      clientAuth,
       authResponseValidationResult,
       authResponse.redirectUri,
       codeVerifier,
