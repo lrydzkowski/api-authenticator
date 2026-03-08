@@ -10,16 +10,18 @@ export interface IKeyVaultService {
 
 export class KeyVaultService implements IKeyVaultService {
   private credential = new DefaultAzureCredential();
-  private client: SecretClient | null = null;
+  private clients = new Map<string, SecretClient>();
 
   constructor(private logger: ILogger) {}
 
   private getClient(vaultUrl: string): SecretClient {
-    if (!this.client) {
-      this.client = new SecretClient(vaultUrl, this.credential);
+    let client = this.clients.get(vaultUrl);
+    if (!client) {
+      client = new SecretClient(vaultUrl, this.credential);
+      this.clients.set(vaultUrl, client);
     }
 
-    return this.client;
+    return client;
   }
 
   public async applySecretOverrides(authConfig: AuthConfig): Promise<AuthConfig> {
