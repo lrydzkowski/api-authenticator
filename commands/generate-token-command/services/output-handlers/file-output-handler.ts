@@ -24,6 +24,10 @@ export class FileOutputHandler implements IOutputHandler, IFileOutputHandler {
       return null;
     }
 
+    if (!this.filesHandler.exists(options.outputFilePath)) {
+      return null;
+    }
+
     const json = this.filesHandler.read(options.outputFilePath);
     const jsonData = JSON.parse(json);
     const refreshToken = this.getValue(options, options.outputFileRefreshTokenKey ?? null, jsonData);
@@ -31,18 +35,19 @@ export class FileOutputHandler implements IOutputHandler, IFileOutputHandler {
     return refreshToken;
   }
 
-  public handleOutput(options: GenerateTokenOptions, tokens: Tokens): void {
+  public handleOutput(options: GenerateTokenOptions, tokens: Tokens, outputSecrets: Record<string, string>): void {
     const outputFilePath = options.outputFilePath as string;
-    if (!this.filesHandler.exists(outputFilePath)) {
-      throw new Error(`Output file doesn't exist (path = '${options.configFilePath}').`);
-    }
-
-    const json = this.filesHandler.read(outputFilePath);
-    const jsonData = JSON.parse(json);
+    const jsonData = this.filesHandler.exists(outputFilePath)
+      ? JSON.parse(this.filesHandler.read(outputFilePath))
+      : {};
 
     this.writeValue(options, options.outputFileAccessTokenKey ?? null, jsonData, tokens.accessToken);
     this.writeValue(options, options.outputFileRefreshTokenKey ?? null, jsonData, tokens.refreshToken);
     this.writeValue(options, options.outputFileIdTokenKey ?? null, jsonData, tokens.idToken ?? null);
+
+    for (const [keyPath, secretValue] of Object.entries(outputSecrets)) {
+      this.writeValue(options, keyPath, jsonData, secretValue);
+    }
 
     let modifiedJson = JSON.stringify(jsonData, null, 2);
     if (options.outputFileWinNewLineChar) {

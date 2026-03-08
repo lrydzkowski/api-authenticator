@@ -6,9 +6,12 @@ import { IOutputHandler } from './output-handler.js';
 export class ConsoleOutputHandler implements IOutputHandler {
   constructor(private logger: ILogger) {}
 
-  handleOutput(options: GenerateTokenOptions, tokens: Tokens): void {
+  handleOutput(options: GenerateTokenOptions, tokens: Tokens, outputSecrets: Record<string, string>): void {
     this.logger.logInfo(`Access token:\n${tokens.accessToken}`);
     this.logger.logInfo(`Refresh token: \n${tokens.refreshToken ?? 'no refresh token'}`);
     this.logger.logInfo(`Id token: \n${tokens.idToken ?? 'no id token'}`);
+    for (const [keyPath, secretValue] of Object.entries(outputSecrets)) {
+      this.logger.logInfo(`Output secret (${keyPath}):\n${secretValue}`);
+    }
   }
 }

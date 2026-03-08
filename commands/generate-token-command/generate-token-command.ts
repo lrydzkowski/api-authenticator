@@ -9,6 +9,7 @@ import { IOutputHandlerResolver } from './services/output-handlers/output-handle
 import { IFilesHandler } from '../../core/services/files-handler.js';
 import { Tokens } from './models/tokens.js';
 import { IFileOutputHandler } from './services/output-handlers/file-output-handler.js';
+import { IKeyVaultService } from './services/key-vault-service.js';
 
 export class GenerateTokenCommand {
   constructor(
@@ -17,6 +18,7 @@ export class GenerateTokenCommand {
     private fileOutputHandler: IFileOutputHandler,
     private authHandlerResolver: IAuthHandlerResolver,
     private outputHandlerResolver: IOutputHandlerResolver,
+    private keyVaultService: IKeyVaultService,
   ) {}
 
   public async runAsync(options: GenerateTokenOptions): Promise<void> {
@@ -31,8 +33,10 @@ export class GenerateTokenCommand {
     const tokens = await authHandler.getTokensAsync(authConfig, refreshToken);
     this.parseAccessToken(options, tokens);
 
+    const outputSecrets = await this.keyVaultService.resolveOutputMappings(authConfig);
+
     const outputHandler = this.outputHandlerResolver.resolve(options);
-    outputHandler.handleOutput(options, tokens);
+    outputHandler.handleOutput(options, tokens, outputSecrets);
   }
 
   private validateOptions(options: GenerateTokenOptions): void {

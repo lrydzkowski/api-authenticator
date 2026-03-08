@@ -37,6 +37,7 @@ export const buildGenerateTokenCommand = (
     fileOutputHandler,
     authHandlerResolver,
     outputHandlerResolver,
+    keyVaultService,
   );
 
   return generateTokenCommand;
