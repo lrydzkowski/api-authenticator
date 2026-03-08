@@ -142,7 +142,7 @@ export class AuthorizationCodeHandler implements IAuthHandler {
 
           const authResponse = { redirectUri, urlSearchParams };
           resolve(authResponse);
-          request.continue();
+          request.abort();
         });
       });
 
