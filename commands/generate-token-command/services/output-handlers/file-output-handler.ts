@@ -31,7 +31,7 @@ export class FileOutputHandler implements IOutputHandler, IFileOutputHandler {
     return refreshToken;
   }
 
-  public handleOutput(options: GenerateTokenOptions, tokens: Tokens): void {
+  public handleOutput(options: GenerateTokenOptions, tokens: Tokens, outputSecrets: Record<string, string>): void {
     const outputFilePath = options.outputFilePath as string;
     if (!this.filesHandler.exists(outputFilePath)) {
       throw new Error(`Output file doesn't exist (path = '${options.configFilePath}').`);
@@ -43,6 +43,10 @@ export class FileOutputHandler implements IOutputHandler, IFileOutputHandler {
     this.writeValue(options, options.outputFileAccessTokenKey ?? null, jsonData, tokens.accessToken);
     this.writeValue(options, options.outputFileRefreshTokenKey ?? null, jsonData, tokens.refreshToken);
     this.writeValue(options, options.outputFileIdTokenKey ?? null, jsonData, tokens.idToken ?? null);
+
+    for (const [keyPath, secretValue] of Object.entries(outputSecrets)) {
+      this.writeValue(options, keyPath, jsonData, secretValue);
+    }
 
     let modifiedJson = JSON.stringify(jsonData, null, 2);
     if (options.outputFileWinNewLineChar) {

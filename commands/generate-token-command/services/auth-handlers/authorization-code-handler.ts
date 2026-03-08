@@ -206,12 +206,7 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     authResponse: AuthResponse,
     state: string,
   ) {
-    return oauth.validateAuthResponse(
-      authServer,
-      client,
-      authResponse.urlSearchParams,
-      state,
-    );
+    return oauth.validateAuthResponse(authServer, client, authResponse.urlSearchParams, state);
   }
 
   private async sendAuthorizationCodeGrantRequestAsync(

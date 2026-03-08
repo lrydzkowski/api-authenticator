@@ -11,6 +11,7 @@ import { fileURLToPath } from 'url';
 import { IAuthHandler } from '../../commands/generate-token-command/services/auth-handlers/auth-handler';
 import { IOutputHandler } from '../../commands/generate-token-command/services/output-handlers/output-handler';
 import { FileOutputHandler } from '../../commands/generate-token-command/services/output-handlers/file-output-handler';
+import { IKeyVaultService } from '../../commands/generate-token-command/services/key-vault-service';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -70,7 +71,9 @@ describe('Generate token command', () => {
 
     const expectedOptions: GenerateTokenOptions = JSON.parse(JSON.stringify(correctOptions));
     const expectedTokens: Tokens = JSON.parse(JSON.stringify(tokens));
-    tsMockitoVerify(mockedOutputHandler.handleOutput(deepEqual(expectedOptions), deepEqual(expectedTokens))).once();
+    tsMockitoVerify(
+      mockedOutputHandler.handleOutput(deepEqual(expectedOptions), deepEqual(expectedTokens), deepEqual({})),
+    ).once();
   });
 
   it(`should show tokens in console when client credentials flow is used`, async () => {
@@ -103,7 +106,9 @@ describe('Generate token command', () => {
 
     const expectedOptions: GenerateTokenOptions = JSON.parse(JSON.stringify(correctOptions));
     const expectedTokens: Tokens = JSON.parse(JSON.stringify(tokens));
-    tsMockitoVerify(mockedOutputHandler.handleOutput(deepEqual(expectedOptions), deepEqual(expectedTokens))).once();
+    tsMockitoVerify(
+      mockedOutputHandler.handleOutput(deepEqual(expectedOptions), deepEqual(expectedTokens), deepEqual({})),
+    ).once();
   });
 
   it(`should write tokens to an output file when authorization code flow is used`, async () => {
@@ -147,6 +152,59 @@ describe('Generate token command', () => {
     const generateTokenCommand = buildGenerateTokenCommand(filesHandler, null, authHandler, null, outputHandler, null);
     await generateTokenCommand.runAsync(correctOptions);
 
-    tsMockitoVerify(mockedOutputHandler.handleOutput(deepEqual(expectedOptions), deepEqual(expectedTokens))).once();
+    tsMockitoVerify(
+      mockedOutputHandler.handleOutput(deepEqual(expectedOptions), deepEqual(expectedTokens), deepEqual({})),
+    ).once();
+  });
+
+  it(`should pass output secrets from key vault to output handler`, async () => {
+    const tokens: Tokens = {
+      accessToken: 'accessTokenTest',
+      refreshToken: 'refreshTokenTest',
+    };
+
+    const correctOptions: GenerateTokenOptions = {
+      configFilePath: './test/test-config.json',
+      env: 'app - dev',
+    };
+
+    const configuration = fs.readFileSync(__dirname + '/correct/test-case-4-config.json', 'utf-8');
+
+    const mockedFilesHandler = mock<IFilesHandler>();
+    when(mockedFilesHandler.exists(correctOptions.configFilePath)).thenReturn(true);
+    when(mockedFilesHandler.read(correctOptions.configFilePath)).thenReturn(configuration);
+    const filesHandler = instance(mockedFilesHandler);
+
+    const mockedAuthHandler = mock<IAuthHandler>();
+    when(mockedAuthHandler.getTokensAsync(anything(), anything())).thenResolve(tokens);
+    const authHandler = instance(mockedAuthHandler);
+
+    const mockedOutputHandler = mock<IOutputHandler>();
+    const outputHandler = instance(mockedOutputHandler);
+
+    const outputSecrets: Record<string, string> = {
+      "'rest-client.environmentVariables'.'{env}'.'apiKey'": 'secret-value',
+    };
+    const mockedKeyVaultService = mock<IKeyVaultService>();
+    when(mockedKeyVaultService.applySecretOverrides(anything())).thenCall((config) => Promise.resolve(config));
+    when(mockedKeyVaultService.resolveOutputMappings(anything())).thenResolve(outputSecrets);
+    const keyVaultService = instance(mockedKeyVaultService);
+
+    const generateTokenCommand = buildGenerateTokenCommand(
+      filesHandler,
+      null,
+      null,
+      authHandler,
+      null,
+      outputHandler,
+      keyVaultService,
+    );
+    await generateTokenCommand.runAsync(correctOptions);
+
+    const expectedOptions: GenerateTokenOptions = JSON.parse(JSON.stringify(correctOptions));
+    const expectedTokens: Tokens = JSON.parse(JSON.stringify(tokens));
+    tsMockitoVerify(
+      mockedOutputHandler.handleOutput(deepEqual(expectedOptions), deepEqual(expectedTokens), deepEqual(outputSecrets)),
+    ).once();
   });
 });

@@ -22,5 +22,8 @@ export interface AuthConfig {
     secretMappings?: {
       [configField: string]: string;
     };
+    outputMappings?: {
+      [outputKeyPath: string]: string;
+    };
   };
 }
