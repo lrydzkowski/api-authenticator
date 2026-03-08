@@ -1,0 +1,11 @@
+{
+  "dev": {
+    "keyVault": {
+      "vaultUrl": "https://my-vault.vault.azure.net",
+      "outputMappings": {
+        "'settings'.'{env}'.'apiKey'": "api-key-secret",
+        "'settings'.'{env}'.'connectionString'": "conn-string-secret"
+      }
+    }
+  }
+}

@@ -8,6 +8,7 @@
   },
   "scripts": {
     "generate-token": "tsx index.ts generate-token",
+    "resolve-secrets": "tsx index.ts resolve-secrets",
     "build": "tsc",
     "lint": "npx eslint .",
     "test": "tsx node_modules/jasmine/bin/jasmine",

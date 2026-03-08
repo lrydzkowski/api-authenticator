@@ -6,6 +6,7 @@ import { ILogger } from '../../../core/services/logger.js';
 export interface IKeyVaultService {
   applySecretOverrides(authConfig: AuthConfig): Promise<AuthConfig>;
   resolveOutputMappings(authConfig: AuthConfig): Promise<Record<string, string>>;
+  resolveSecrets(vaultUrl: string, mappings: Record<string, string>): Promise<Record<string, string>>;
 }
 
 export class KeyVaultService implements IKeyVaultService {
@@ -61,28 +62,32 @@ export class KeyVaultService implements IKeyVaultService {
     }
 
     try {
-      const client = this.getClient(authConfig.keyVault.vaultUrl);
-      const result: Record<string, string> = {};
-
-      for (const [outputKeyPath, secretName] of Object.entries(authConfig.keyVault.outputMappings)) {
-        try {
-          const secret = await client.getSecret(secretName);
-          if (secret.value) {
-            result[outputKeyPath] = secret.value;
-          }
-        } catch (error) {
-          throw new Error(
-            `Failed to retrieve secret '${secretName}' for output key '${outputKeyPath}': ${(error as Error).message}`,
-          );
-        }
-      }
-
-      return result;
+      return await this.resolveSecrets(authConfig.keyVault.vaultUrl, authConfig.keyVault.outputMappings);
     } catch (error) {
       this.logger.logError(`KeyVault output mappings failed: ${(error as Error).message}`);
 
       return {};
     }
+  }
+
+  public async resolveSecrets(vaultUrl: string, mappings: Record<string, string>): Promise<Record<string, string>> {
+    const client = this.getClient(vaultUrl);
+    const result: Record<string, string> = {};
+
+    for (const [outputKeyPath, secretName] of Object.entries(mappings)) {
+      try {
+        const secret = await client.getSecret(secretName);
+        if (secret.value) {
+          result[outputKeyPath] = secret.value;
+        }
+      } catch (error) {
+        throw new Error(
+          `Failed to retrieve secret '${secretName}' for output key '${outputKeyPath}': ${(error as Error).message}`,
+        );
+      }
+    }
+
+    return result;
   }
 
   private setConfigValue(config: AuthConfig, field: string, value: string): void {

@@ -34,7 +34,7 @@ export class AuthConfigParser implements IAuthConfigParser {
     envAuthConfig.tokenEndpoint = envAuthConfig.tokenEndpoint?.trim() ?? '';
     envAuthConfig.audience = envAuthConfig.audience?.trim() ?? '';
     envAuthConfig.resource = envAuthConfig.resource?.trim() ?? '';
-    envAuthConfig.origin = envAuthConfig.origin?.trim() ?? '';
+    envAuthConfig.origin = envAuthConfig.origin?.trim() ?? null;
     envAuthConfig.customScriptPath = envAuthConfig.customScriptPath?.trim();
     if (envAuthConfig.keyVault) {
       envAuthConfig.keyVault.vaultUrl = envAuthConfig.keyVault.vaultUrl?.trim() ?? '';

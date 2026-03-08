@@ -1,0 +1,8 @@
+{
+  "dev": {
+    "keyVault": {
+      "vaultUrl": "https://my-vault.vault.azure.net",
+      "outputMappings": {}
+    }
+  }
+}

@@ -7,7 +7,7 @@ export interface AuthConfig {
   tokenEndpoint: string;
   audience?: string;
   resource?: string;
-  origin?: string;
+  origin?: string | null;
   flow: 'authorization_code' | 'client_credentials';
   autoFill?: {
     emailSelector?: string;

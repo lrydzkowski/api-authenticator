@@ -1,0 +1,10 @@
+{
+  "dev": {
+    "keyVault": {
+      "vaultUrl": "  ",
+      "outputMappings": {
+        "'key1'": "secret-1"
+      }
+    }
+  }
+}
