@@ -9,7 +9,18 @@ export interface IKeyVaultService {
 }
 
 export class KeyVaultService implements IKeyVaultService {
+  private credential = new DefaultAzureCredential();
+  private client: SecretClient | null = null;
+
   constructor(private logger: ILogger) {}
+
+  private getClient(vaultUrl: string): SecretClient {
+    if (!this.client) {
+      this.client = new SecretClient(vaultUrl, this.credential);
+    }
+
+    return this.client;
+  }
 
   public async applySecretOverrides(authConfig: AuthConfig): Promise<AuthConfig> {
     if (!authConfig.keyVault?.vaultUrl || !authConfig.keyVault?.secretMappings) {
@@ -17,8 +28,7 @@ export class KeyVaultService implements IKeyVaultService {
     }
 
     try {
-      const credential = new DefaultAzureCredential();
-      const client = new SecretClient(authConfig.keyVault.vaultUrl, credential);
+      const client = this.getClient(authConfig.keyVault.vaultUrl);
 
       const overriddenConfig = structuredClone(authConfig);
 
@@ -49,8 +59,7 @@ export class KeyVaultService implements IKeyVaultService {
     }
 
     try {
-      const credential = new DefaultAzureCredential();
-      const client = new SecretClient(authConfig.keyVault.vaultUrl, credential);
+      const client = this.getClient(authConfig.keyVault.vaultUrl);
       const result: Record<string, string> = {};
 
       for (const [outputKeyPath, secretName] of Object.entries(authConfig.keyVault.outputMappings)) {

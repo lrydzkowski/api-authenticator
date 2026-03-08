@@ -76,7 +76,7 @@ export const incorrectOptionsTestCases: IncorrectOptionsTestCase[] = [
       ...correctOptions,
       outputFilePath: './test.json',
     },
-    mockFilesHandler(correctOptions.configFilePath, true, './test.json', false),
+    mockFilesHandler(correctOptions.configFilePath, true),
     __dirname + '/results/test-case-3.approved.txt',
   ),
   buildTestCase(
@@ -86,7 +86,7 @@ export const incorrectOptionsTestCases: IncorrectOptionsTestCase[] = [
       outputFilePath: './test.json',
       outputFileAccessTokenKey: undefined,
     },
-    mockFilesHandler(correctOptions.configFilePath, true, './test.json', true),
+    mockFilesHandler(correctOptions.configFilePath, true),
     __dirname + '/results/test-case-4.approved.txt',
   ),
   buildTestCase(
@@ -118,7 +118,7 @@ export const incorrectOptionsTestCases: IncorrectOptionsTestCase[] = [
       outputFileAccessTokenKey: "'test'.'test2'",
       outputFileRefreshTokenKey: '',
     },
-    mockFilesHandler(correctOptions.configFilePath, true, './test.json', true),
+    mockFilesHandler(correctOptions.configFilePath, true),
     __dirname + '/results/test-case-7.approved.txt',
   ),
 ];

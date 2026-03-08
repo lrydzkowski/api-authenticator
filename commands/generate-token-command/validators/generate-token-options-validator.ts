@@ -11,8 +11,8 @@ export class GenerateTokenOptionsValidator extends Validator<GenerateTokenOption
       .withMessage("Path from --config-file-path option doesn't exist.");
     this.ruleFor('env').notEmpty().withMessage('--env option is required');
     this.ruleFor('outputFilePath')
-      .must((x) => typeof x === 'string' && filesHandler.exists(x))
-      .withMessage("Path from --output-file-path option doesn't exist.")
+      .notNull()
+      .notEmpty()
       .when((x) => typeof x.outputFilePath === 'string');
     this.ruleFor('outputFileAccessTokenKey')
       .notNull()
