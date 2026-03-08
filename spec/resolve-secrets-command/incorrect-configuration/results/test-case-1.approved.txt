@@ -1,0 +1,1 @@
+A configuration file (path = './test/test-config.json') doesn't contain the given environment ('dev').

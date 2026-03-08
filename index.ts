@@ -3,6 +3,8 @@
 import { Command } from '@commander-js/extra-typings';
 import { GenerateTokenOptions } from './commands/generate-token-command/models/generate-token-options.js';
 import { buildGenerateTokenCommand } from './commands/generate-token-command/generate-token-command-builder.js';
+import { ResolveSecretsOptions } from './commands/resolve-secrets-command/models/resolve-secrets-options.js';
+import { buildResolveSecretsCommand } from './commands/resolve-secrets-command/resolve-secrets-command-builder.js';
 
 const program = new Command();
 program
@@ -25,6 +27,22 @@ program
     try {
       const generateTokenCommand = buildGenerateTokenCommand();
       await generateTokenCommand.runAsync(options);
+    } catch (error) {
+      command.error(`error: ${(error as Error)?.message}`);
+      process.exit(1);
+    }
+  });
+
+program
+  .command('resolve-secrets')
+  .requiredOption('--config-file-path <config_path>')
+  .requiredOption('--env <environment>')
+  .requiredOption('--output-file-path <output_file_path>')
+  .option('--output-file-win-new-line-char')
+  .action(async (options: ResolveSecretsOptions, command) => {
+    try {
+      const resolveSecretsCommand = buildResolveSecretsCommand();
+      await resolveSecretsCommand.runAsync(options);
     } catch (error) {
       command.error(`error: ${(error as Error)?.message}`);
       process.exit(1);

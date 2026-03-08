@@ -1,0 +1,10 @@
+{
+  "other-env": {
+    "keyVault": {
+      "vaultUrl": "https://my-vault.vault.azure.net",
+      "outputMappings": {
+        "'key1'": "secret-1"
+      }
+    }
+  }
+}

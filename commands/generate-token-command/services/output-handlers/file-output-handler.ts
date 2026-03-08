@@ -37,9 +37,7 @@ export class FileOutputHandler implements IOutputHandler, IFileOutputHandler {
 
   public handleOutput(options: GenerateTokenOptions, tokens: Tokens, outputSecrets: Record<string, string>): void {
     const outputFilePath = options.outputFilePath as string;
-    const jsonData = this.filesHandler.exists(outputFilePath)
-      ? JSON.parse(this.filesHandler.read(outputFilePath))
-      : {};
+    const jsonData = this.filesHandler.exists(outputFilePath) ? JSON.parse(this.filesHandler.read(outputFilePath)) : {};
 
     this.writeValue(options, options.outputFileAccessTokenKey ?? null, jsonData, tokens.accessToken);
     this.writeValue(options, options.outputFileRefreshTokenKey ?? null, jsonData, tokens.refreshToken);

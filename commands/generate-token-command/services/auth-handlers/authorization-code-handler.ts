@@ -25,7 +25,13 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     const clientAuth: oauth.ClientAuth = oauth.None();
 
     const origin = config.origin ?? null;
-    const refreshedTokens: Tokens | null = await this.refreshTokensAsync(authServer, client, clientAuth, refreshToken, origin);
+    const refreshedTokens: Tokens | null = await this.refreshTokensAsync(
+      authServer,
+      client,
+      clientAuth,
+      refreshToken,
+      origin,
+    );
     if (refreshedTokens) {
       return refreshedTokens;
     }
@@ -65,7 +71,13 @@ export class AuthorizationCodeHandler implements IAuthHandler {
       options.headers = { origin };
     }
 
-    const response: Response = await oauth.refreshTokenGrantRequest(authServer, client, clientAuth, refreshToken, options);
+    const response: Response = await oauth.refreshTokenGrantRequest(
+      authServer,
+      client,
+      clientAuth,
+      refreshToken,
+      options,
+    );
     const responseBody = await response.json();
     const accessToken = responseBody?.access_token ?? null;
     if (accessToken === null) {
