@@ -126,9 +126,6 @@ export class AuthorizationCodeHandler implements IAuthHandler {
       const page = pages[0];
       await page.goto(authorizationUrl.toString(), { waitUntil: 'networkidle0' });
 
-      await this.executeCustomScript(page, config);
-      await this.autoFillCredentials(page, config);
-
       await page.setRequestInterception(true);
       const resultPromise = new Promise<AuthResponse>((resolve) => {
         page.on('request', (request) => {
@@ -145,9 +142,12 @@ export class AuthorizationCodeHandler implements IAuthHandler {
 
           const authResponse = { redirectUri, urlSearchParams };
           resolve(authResponse);
-          request.abort();
+          request.continue();
         });
       });
+
+      await this.executeCustomScript(page, config);
+      await this.autoFillCredentials(page, config);
 
       const result = await resultPromise;
 
