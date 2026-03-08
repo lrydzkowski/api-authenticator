@@ -230,6 +230,101 @@ api-authenticator generate-token `
   --output-file-win-new-line-char
 ```
 
+## Azure Key Vault Integration
+
+Sensitive configuration values (client secrets, credentials, API keys) can be retrieved from Azure Key Vault using `DefaultAzureCredential` instead of storing them in plain-text config files.
+
+### Azure Prerequisites
+
+- You must be authenticated to Azure (e.g., via Azure CLI `az login`).
+- The Key Vault must be accessible to your Azure identity.
+
+### Secret Mappings
+
+The `keyVault.secretMappings` property maps configuration fields to Key Vault secret names. At runtime, the tool retrieves the secret value from Key Vault and injects it into the corresponding config field.
+
+Example (`ad-client-credentials-with-keyvault.json`):
+
+```json
+{
+  "App - local": {
+    "clientId": "14ffef84-5802-4ea5-aa26-d33c4da732b5",
+    "tokenEndpoint": "https://login.microsoftonline.com/c3af1697-15c2-44e3-99ae-9f34166c36fb/oauth2/token",
+    "resource": "845d9400-8921-4590-83e6-f506e779b130",
+    "flow": "client_credentials",
+    "keyVault": {
+      "vaultUrl": "https://your-keyvault.vault.azure.net",
+      "secretMappings": {
+        "clientSecret": "my-app-client-secret"
+      }
+    }
+  }
+}
+```
+
+In this example, `clientSecret` is resolved from the Key Vault secret named `my-app-client-secret`.
+
+### Nested Field Mappings
+
+Use dot notation to map nested configuration fields. This is useful for auto-fill credentials in authorization code flows.
+
+Example (`ad-authorization-code-with-keyvault.json`):
+
+```json
+{
+  "App - local": {
+    "clientId": "14ffef84-5802-4ea5-aa26-d33c4da732b5",
+    "scope": "openid offline_access",
+    "authorizationEndpoint": "https://login.microsoftonline.com/c3af1697-15c2-44e3-99ae-9f34166c36fb/oauth2/v2.0/authorize",
+    "tokenEndpoint": "https://login.microsoftonline.com/c3af1697-15c2-44e3-99ae-9f34166c36fb/oauth2/token",
+    "flow": "authorization_code",
+    "keyVault": {
+      "vaultUrl": "https://your-keyvault.vault.azure.net",
+      "secretMappings": {
+        "clientSecret": "my-app-client-secret",
+        "autoFill.email": "test-user-email",
+        "autoFill.password": "test-user-password"
+      }
+    },
+    "autoFill": {
+      "emailSelector": "input[name='loginfmt']",
+      "passwordSelector": "input[name='passwd']",
+      "submitSelector": "input[type='submit']"
+    }
+  }
+}
+```
+
+Here, `autoFill.email` and `autoFill.password` are resolved from Key Vault secrets `test-user-email` and `test-user-password` respectively.
+
+### Output Mappings
+
+The `keyVault.outputMappings` property retrieves additional secrets from Key Vault and writes them to the output file alongside tokens. Each key is an output file path (using the same dot notation as `--output-file-access-token-key`) and each value is a Key Vault secret name. The `{env}` placeholder is supported in output mapping keys.
+
+Example (`ad-client-credentials-with-keyvault-output-mappings.json`):
+
+```json
+{
+  "App - local": {
+    "clientId": "14ffef84-5802-4ea5-aa26-d33c4da732b5",
+    "tokenEndpoint": "https://login.microsoftonline.com/c3af1697-15c2-44e3-99ae-9f34166c36fb/oauth2/token",
+    "resource": "845d9400-8921-4590-83e6-f506e779b130",
+    "flow": "client_credentials",
+    "keyVault": {
+      "vaultUrl": "https://your-keyvault.vault.azure.net",
+      "secretMappings": {
+        "clientSecret": "my-app-client-secret"
+      },
+      "outputMappings": {
+        "'rest-client.environmentVariables'.'{env}'.'apiKey'": "my-api-key-secret"
+      }
+    }
+  }
+}
+```
+
+In this example, the secret `my-api-key-secret` is retrieved from Key Vault and written to the output file at the path `rest-client.environmentVariables.{env}.apiKey`, where `{env}` is replaced with the current environment name.
+
 ## Technical Details
 
 1. It's written in TypeScript.
