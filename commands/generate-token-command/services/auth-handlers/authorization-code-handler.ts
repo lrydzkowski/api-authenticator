@@ -24,7 +24,8 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     };
     const clientAuth: oauth.ClientAuth = oauth.None();
 
-    const refreshedTokens: Tokens | null = await this.refreshTokensAsync(authServer, client, clientAuth, refreshToken);
+    const origin = config.origin ?? null;
+    const refreshedTokens: Tokens | null = await this.refreshTokensAsync(authServer, client, clientAuth, refreshToken, origin);
     if (refreshedTokens) {
       return refreshedTokens;
     }
@@ -35,7 +36,6 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     const authUrl = await this.buildAuthUrlAsync(config, codeVerifier, state);
     const authResponse = await this.getAuthResponseAsync(authUrl, config);
     const authResponseValidationResult = this.validateAuthResponse(authServer, client, authResponse, state);
-    const origin = config.origin ?? null;
     const tokens = await this.sendAuthorizationCodeGrantRequestAsync(
       authServer,
       client,
@@ -54,12 +54,18 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     client: oauth.Client,
     clientAuth: oauth.ClientAuth,
     refreshToken: string | null,
+    origin: string | null,
   ): Promise<Tokens | null> {
     if (!refreshToken) {
       return null;
     }
 
-    const response: Response = await oauth.refreshTokenGrantRequest(authServer, client, clientAuth, refreshToken);
+    const options: oauth.TokenEndpointRequestOptions = {};
+    if (origin !== null) {
+      options.headers = { origin };
+    }
+
+    const response: Response = await oauth.refreshTokenGrantRequest(authServer, client, clientAuth, refreshToken, options);
     const responseBody = await response.json();
     const accessToken = responseBody?.access_token ?? null;
     if (accessToken === null) {
