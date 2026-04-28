@@ -21,8 +21,8 @@
   "author": "lrydzkowski",
   "license": "MIT",
   "dependencies": {
-    "@azure/identity": "^4.13.0",
-    "@azure/keyvault-secrets": "^4.10.0",
+    "@azure/identity": "^4.13.1",
+    "@azure/keyvault-secrets": "^4.11.1",
     "@commander-js/extra-typings": "^14.0.0",
     "fluentvalidation-ts": "^5.0.0",
     "oauth4webapi": "^3.8.5",
