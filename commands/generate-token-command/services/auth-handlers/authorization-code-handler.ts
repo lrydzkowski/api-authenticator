@@ -31,6 +31,7 @@ export class AuthorizationCodeHandler implements IAuthHandler {
       clientAuth,
       refreshToken,
       origin,
+      config.scope ?? null,
     );
     if (refreshedTokens) {
       return refreshedTokens;
@@ -61,6 +62,7 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     clientAuth: oauth.ClientAuth,
     refreshToken: string | null,
     origin: string | null,
+    scope: string | null,
   ): Promise<Tokens | null> {
     if (!refreshToken) {
       return null;
@@ -69,6 +71,9 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     const options: oauth.TokenEndpointRequestOptions = {};
     if (origin !== null) {
       options.headers = { origin };
+    }
+    if (scope !== null) {
+      options.additionalParameters = new URLSearchParams({ scope });
     }
 
     const response: Response = await oauth.refreshTokenGrantRequest(
