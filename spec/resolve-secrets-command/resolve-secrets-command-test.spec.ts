@@ -1,10 +1,10 @@
-import { buildResolveSecretsCommand } from '../../commands/resolve-secrets-command/resolve-secrets-command-builder';
-import { incorrectOptionsTestCases } from './incorrect-options/incorrect-options-test-cases';
-import { incorrectConfigurationTestCases } from './incorrect-configuration/incorrect-configuration-test-cases';
+import { buildResolveSecretsCommand } from '../../commands/resolve-secrets-command/resolve-secrets-command-builder.js';
+import { incorrectOptionsTestCases } from './incorrect-options/incorrect-options-test-cases.js';
+import { incorrectConfigurationTestCases } from './incorrect-configuration/incorrect-configuration-test-cases.js';
 import { anything, deepEqual, instance, mock, verify as tsMockitoVerify, when } from 'ts-mockito';
-import { ResolveSecretsOptions } from '../../commands/resolve-secrets-command/models/resolve-secrets-options';
-import { IFilesHandler } from '../../core/services/files-handler';
-import { IKeyVaultService } from '../../commands/generate-token-command/services/key-vault-service';
+import { ResolveSecretsOptions } from '../../commands/resolve-secrets-command/models/resolve-secrets-options.js';
+import { IFilesHandler } from '../../core/services/files-handler.js';
+import { IKeyVaultService } from '../../commands/generate-token-command/services/key-vault-service.js';
 import * as fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -179,3 +179,4 @@ describe('Resolve secrets command', () => {
     tsMockitoVerify(mockedFilesHandler.write(options.outputFilePath, expectedJson)).once();
   });
 });
+

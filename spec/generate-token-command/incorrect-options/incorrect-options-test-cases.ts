@@ -1,6 +1,6 @@
 import { mock, when, instance } from 'ts-mockito';
-import { GenerateTokenOptions } from '../../../commands/generate-token-command/models/generate-token-options';
-import { FilesHandler, IFilesHandler } from '../../../core/services/files-handler';
+import { GenerateTokenOptions } from '../../../commands/generate-token-command/models/generate-token-options.js';
+import { FilesHandler, IFilesHandler } from '../../../core/services/files-handler.js';
 import * as fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -122,3 +122,4 @@ export const incorrectOptionsTestCases: IncorrectOptionsTestCase[] = [
     __dirname + '/results/test-case-7.approved.txt',
   ),
 ];
+

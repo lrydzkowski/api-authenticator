@@ -1,6 +1,6 @@
 import { instance, mock, when } from 'ts-mockito';
-import { FilesHandler, IFilesHandler } from '../../../core/services/files-handler';
-import { GenerateTokenOptions } from '../../../commands/generate-token-command/models/generate-token-options';
+import { FilesHandler, IFilesHandler } from '../../../core/services/files-handler.js';
+import { GenerateTokenOptions } from '../../../commands/generate-token-command/models/generate-token-options.js';
 import * as fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -61,3 +61,4 @@ export const incorrectConfigurationTestCase: IncorrectConfigurationTestCase[] = 
   buildTestCase(11, __dirname + '/test-case-11.json', __dirname + '/results/test-case-11.approved.txt'),
   buildTestCase(12, __dirname + '/test-case-12.json', __dirname + '/results/test-case-12.approved.txt'),
 ];
+

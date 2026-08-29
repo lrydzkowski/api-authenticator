@@ -1,17 +1,17 @@
-import { buildGenerateTokenCommand } from '../../commands/generate-token-command/generate-token-command-builder';
-import { incorrectOptionsTestCases } from './incorrect-options/incorrect-options-test-cases';
-import { incorrectConfigurationTestCase } from './incorrect-configuration/incorrect-configuration-test-cases';
-import { Tokens } from '../../commands/generate-token-command/models/tokens';
+import { buildGenerateTokenCommand } from '../../commands/generate-token-command/generate-token-command-builder.js';
+import { incorrectOptionsTestCases } from './incorrect-options/incorrect-options-test-cases.js';
+import { incorrectConfigurationTestCase } from './incorrect-configuration/incorrect-configuration-test-cases.js';
+import { Tokens } from '../../commands/generate-token-command/models/tokens.js';
 import { anything, deepEqual, instance, mock, verify as tsMockitoVerify, when } from 'ts-mockito';
-import { GenerateTokenOptions } from '../../commands/generate-token-command/models/generate-token-options';
-import { IFilesHandler } from '../../core/services/files-handler';
+import { GenerateTokenOptions } from '../../commands/generate-token-command/models/generate-token-options.js';
+import { IFilesHandler } from '../../core/services/files-handler.js';
 import * as fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { IAuthHandler } from '../../commands/generate-token-command/services/auth-handlers/auth-handler';
-import { IOutputHandler } from '../../commands/generate-token-command/services/output-handlers/output-handler';
-import { FileOutputHandler } from '../../commands/generate-token-command/services/output-handlers/file-output-handler';
-import { IKeyVaultService } from '../../commands/generate-token-command/services/key-vault-service';
+import { IAuthHandler } from '../../commands/generate-token-command/services/auth-handlers/auth-handler.js';
+import { IOutputHandler } from '../../commands/generate-token-command/services/output-handlers/output-handler.js';
+import { FileOutputHandler } from '../../commands/generate-token-command/services/output-handlers/file-output-handler.js';
+import { IKeyVaultService } from '../../commands/generate-token-command/services/key-vault-service.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -208,3 +208,4 @@ describe('Generate token command', () => {
     ).once();
   });
 });
+

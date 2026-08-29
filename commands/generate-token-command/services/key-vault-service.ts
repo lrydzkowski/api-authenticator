@@ -44,6 +44,7 @@ export class KeyVaultService implements IKeyVaultService {
         } catch (error) {
           throw new Error(
             `Failed to retrieve secret '${secretName}' for config field '${configField}': ${(error as Error).message}`,
+            { cause: error },
           );
         }
       }
@@ -83,6 +84,7 @@ export class KeyVaultService implements IKeyVaultService {
       } catch (error) {
         throw new Error(
           `Failed to retrieve secret '${secretName}' for output key '${outputKeyPath}': ${(error as Error).message}`,
+          { cause: error },
         );
       }
     }
@@ -106,3 +108,4 @@ export class KeyVaultService implements IKeyVaultService {
     current[finalField] = value;
   }
 }
+
