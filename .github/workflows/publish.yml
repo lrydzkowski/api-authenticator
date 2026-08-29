@@ -13,12 +13,12 @@ jobs:
 
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
-      - name: Setup Node 22
-        uses: actions/setup-node@v4
+      - name: Setup Node 24
+        uses: actions/setup-node@v7
         with:
-          node-version: '22.x'
+          node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies

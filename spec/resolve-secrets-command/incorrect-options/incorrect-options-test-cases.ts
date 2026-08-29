@@ -1,6 +1,6 @@
 import { mock, when, instance } from 'ts-mockito';
-import { ResolveSecretsOptions } from '../../../commands/resolve-secrets-command/models/resolve-secrets-options';
-import { FilesHandler, IFilesHandler } from '../../../core/services/files-handler';
+import { ResolveSecretsOptions } from '../../../commands/resolve-secrets-command/models/resolve-secrets-options.js';
+import { FilesHandler, IFilesHandler } from '../../../core/services/files-handler.js';
 import * as fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';

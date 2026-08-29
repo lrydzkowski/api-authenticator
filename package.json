@@ -1,6 +1,6 @@
 {
   "name": "@lrydzkowski/api-authenticator",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "A console app generating an access token for APIs protected by OAuth 2.0 protocol",
   "main": "dist/index.js",
   "bin": {
@@ -10,7 +10,7 @@
     "generate-token": "tsx index.ts generate-token",
     "resolve-secrets": "tsx index.ts resolve-secrets",
     "build": "tsc",
-    "lint": "npx eslint .",
+    "lint": "oxlint .",
     "test": "tsx node_modules/jasmine/bin/jasmine",
     "prettier": "prettier --write ."
   },
@@ -21,25 +21,26 @@
   "author": "lrydzkowski",
   "license": "MIT",
   "dependencies": {
-    "@azure/identity": "^4.13.1",
-    "@azure/keyvault-secrets": "^4.11.1",
-    "@commander-js/extra-typings": "^14.0.0",
+    "@azure/identity": "^4.13.2",
+    "@azure/keyvault-secrets": "^4.11.2",
+    "@commander-js/extra-typings": "^15.0.0",
     "fluentvalidation-ts": "^5.0.0",
-    "oauth4webapi": "^3.8.5",
-    "puppeteer": "24.38"
+    "oauth4webapi": "^3.8.7",
+    "puppeteer": "25.9.0"
   },
   "type": "module",
   "devDependencies": {
-    "@eslint/js": "^9.31.0",
-    "@types/eslint__js": "^8.42.3",
-    "@types/jasmine": "^5.1.8",
-    "eslint": "^9.31.0",
-    "jasmine": "^5.9.0",
+    "@types/jasmine": "^6.0.0",
+    "@types/node": "^24.13.3",
+    "jasmine": "^7.0.0",
     "jasmine-spec-reporter": "^7.0.0",
-    "prettier": "^3.6.2",
+    "oxlint": "^1.80.0",
+    "prettier": "^3.9.6",
     "ts-mockito": "^2.6.1",
-    "tsx": "^4.20.3",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.37.0"
+    "tsx": "^4.23.12",
+    "typescript": "^7.0.2"
+  },
+  "engines": {
+    "node": ">=24.0.0"
   }
 }

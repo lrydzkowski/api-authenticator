@@ -1,6 +1,6 @@
 import { instance, mock, when } from 'ts-mockito';
-import { FilesHandler, IFilesHandler } from '../../../core/services/files-handler';
-import { GenerateTokenOptions } from '../../../commands/generate-token-command/models/generate-token-options';
+import { FilesHandler, IFilesHandler } from '../../../core/services/files-handler.js';
+import { GenerateTokenOptions } from '../../../commands/generate-token-command/models/generate-token-options.js';
 import * as fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';

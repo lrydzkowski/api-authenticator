@@ -1,4 +1,4 @@
-import { AuthConfig } from '../../models/auth-config';
+import { AuthConfig } from '../../models/auth-config.js';
 import { IAuthHandler } from './auth-handler.js';
 
 export interface IAuthHandlerResolver {
