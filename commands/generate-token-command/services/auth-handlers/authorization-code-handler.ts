@@ -137,7 +137,7 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     const browser = await puppeteer.launch({
       headless: false,
       defaultViewport: { width: 800, height: 800 },
-      args: ['--window-size=800,800'],
+      args: ['--start-maximized'],
       protocolTimeout: timeout,
     });
     try {
@@ -147,6 +147,7 @@ export class AuthorizationCodeHandler implements IAuthHandler {
       }
 
       const page = pages[0];
+      await this.resizeBrowserWindow(page);
       await page.goto(authorizationUrl.toString(), { waitUntil: 'networkidle0' });
 
       await page.setRequestInterception(true);
@@ -178,6 +179,13 @@ export class AuthorizationCodeHandler implements IAuthHandler {
     } finally {
       await browser.close();
     }
+  }
+
+  private async resizeBrowserWindow(page: Page): Promise<void> {
+    const client = await page.createCDPSession();
+    const { windowId } = await client.send('Browser.getWindowForTarget');
+    await client.send('Browser.setWindowBounds', { windowId, bounds: { windowState: 'normal' } });
+    await client.send('Browser.setWindowBounds', { windowId, bounds: { width: 800, height: 800 } });
   }
 
   private async executeCustomScript(page: Page, config: AuthConfig) {
