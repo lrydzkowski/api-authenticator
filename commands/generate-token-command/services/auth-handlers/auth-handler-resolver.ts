@@ -22,4 +22,3 @@ export class AuthHandlerResolver implements IAuthHandlerResolver {
     }
   }
 }
-

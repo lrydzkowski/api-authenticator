@@ -122,4 +122,3 @@ export const incorrectOptionsTestCases: IncorrectOptionsTestCase[] = [
     __dirname + '/results/test-case-7.approved.txt',
   ),
 ];
-

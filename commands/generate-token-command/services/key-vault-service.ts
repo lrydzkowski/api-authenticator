@@ -108,4 +108,3 @@ export class KeyVaultService implements IKeyVaultService {
     current[finalField] = value;
   }
 }
-

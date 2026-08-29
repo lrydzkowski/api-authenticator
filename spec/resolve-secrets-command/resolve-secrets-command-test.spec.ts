@@ -179,4 +179,3 @@ describe('Resolve secrets command', () => {
     tsMockitoVerify(mockedFilesHandler.write(options.outputFilePath, expectedJson)).once();
   });
 });
-

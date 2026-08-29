@@ -208,4 +208,3 @@ describe('Generate token command', () => {
     ).once();
   });
 });
-
